@@ -58,7 +58,19 @@ export function activate(context: vscode.ExtensionContext) {
 				 * [':', '=', '(', ')', '+']]
 				 * ```
 				 */
-				let delimiters: string[][] = []; // ! Wait, what happens if the first or last segment is a delimiter? I hadn't thought of that...
+				let delimiters: string[][] = [];
+				// ! Wait, what happens if the first or last segment is a delimiter? I hadn't thought of that...
+				/**
+				 * ? Weird... A cursory test shows no such bug...
+				 * ```
+				 * // Input:
+				 * + 113432 * 23 %
+				 * + 233 - fdsfsgs
+				 * // Result:
+				 *  + 113432 * 23      % 
+				 *  + 233    - fdsfsgs
+				 * ```
+				 */
 
 				/**
 				 * The delimited strings to be aligned.
