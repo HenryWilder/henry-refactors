@@ -99,7 +99,7 @@ export function activate(context: vscode.ExtensionContext) {
 				 * maxSegments = 6 // ['const abcde','number','aa','123','','bb']
 				 * ```
 				 */
-				let maxSegments = 0;
+				let maxSegments: number = 0;
 
 				for (const seg of segments) {
 					if (seg.length > maxSegments) {
@@ -125,10 +125,10 @@ export function activate(context: vscode.ExtensionContext) {
 				// Find the length each subsegment should pad to
 				for (let /** segment index */ x: number = 0; x < maxSegments; ++x) {
 					for (let /** selection index */ y: number = 0; y < segments.length; ++y) {
-
 						/** The current segment (y) */
-						const segment: string[] = segments[y];
-						if (segment.length < x) {
+							const segment: string[] = segments[y];
+						
+						if (x >= segment.length) {
 							continue;
 						}
 
@@ -229,9 +229,9 @@ export function activate(context: vscode.ExtensionContext) {
 			} catch (err) {
 				console.error(err);
 				if (typeof err === 'string') {
-					vscode.window.showErrorMessage(err);
+					vscode.window.showErrorMessage(`Henry Refactors | ${err}`);
 				} else if (err instanceof Error) {
-					vscode.window.showErrorMessage(`${err.name}: ${err.message} ${err?.stack}`);
+					vscode.window.showErrorMessage(`Henry Refactors | ${err.name}: ${err.message} ${err?.stack}`);
 				}
 			}
 		}
