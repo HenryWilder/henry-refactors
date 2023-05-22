@@ -80,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 				for (const range of selections) {
 					const rangeText = document.getText(range);
-					const rxDelim = /[\.:,\(\)=\+\-\[\]\{\};]/g;
+					const rxDelim = /[^\w\s]/g;
 					delimiters.push(rangeText.split('').filter((str: string) => rxDelim.test(str)));
 					segments.push(rangeText.split(rxDelim).map((str: string) => str.trim()));
 				}
