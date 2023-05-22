@@ -1,5 +1,5 @@
 {
-  "name": "henry-refactors",
+  "name": "henryrefactors",
   "displayName": "Henry Refactors",
   "description": "Custom refactors created by Henry",
   "version": "0.0.1",
@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "henry-refactors.helloWorld",
+        "command": "henryrefactors.helloWorld",
         "title": "Hello World"
       }
     ]

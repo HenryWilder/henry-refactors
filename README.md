@@ -1,6 +1,6 @@
-# henry-refactors README
+# henryrefactors README
 
-This is the README for your extension "henry-refactors". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "henryrefactors". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
