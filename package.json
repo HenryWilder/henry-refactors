@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "henryrefactors.helloWorld",
-        "title": "Hello World"
+        "command": "henryrefactors.henryAlign",
+        "title": "Henry Align"
       }
     ]
   },
