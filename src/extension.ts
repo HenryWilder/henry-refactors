@@ -80,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 				for (const range of selections) {
 					const rangeText = document.getText(range);
-					const rxDelim = /[\.:,\(\)=\+\-]/g;
+					const rxDelim = /[\.:,\(\)=\+\-\[\]\{\};]/g;
 					delimiters.push(rangeText.split('').filter((str: string) => rxDelim.test(str)));
 					segments.push(rangeText.split(rxDelim).map((str: string) => str.trim()));
 				}
@@ -228,6 +228,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 			} catch (err) {
 				console.error(err);
+				if (typeof err === 'string') {
+					vscode.window.showErrorMessage(err);
+				} else if (err instanceof Error) {
+					vscode.window.showErrorMessage(`${err.name}: ${err.message} ${err?.stack}`);
+				}
 			}
 		}
 	});
