@@ -17,8 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
 				for (const range of selections) {
 					const word = document.getText(range);
 					const reversed = word.split('').reverse().join('');
-					console.log(`Selection ${selectionStr(range)}\n    Range text: "${word}"\n    Reversed text: "${reversed}".\n  It is now ${document.getText(range)}.`);
 					editBuilder.replace(range, reversed);
+					console.log(`Selection ${selectionStr(range)}\n    Range text: "${word}"\n    Reversed text: "${reversed}".\n  It is now ${document.getText(range)}.`);
 				}
 			});
 		}
