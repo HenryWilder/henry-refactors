@@ -44,12 +44,13 @@ export const hwCmd = (cmdCallback: () => void): (() => void) => {
         } catch (err) {
             console.error(err);
 
+            const preface = 'Henry Refactors';
             if (typeof err === 'string') {
-                vscode.window.showErrorMessage(`Henry Refactors | ${err}`);
+                vscode.window.showErrorMessage(`${preface} | ${err}`);
             } else if (err instanceof Error) {
-                vscode.window.showErrorMessage(`Henry Refactors | ${err.name}: ${err.message} ${err?.stack}`);
+                vscode.window.showErrorMessage(`${preface} | ${err.name}: ${err.message} ${err?.stack}`);
             } else {
-                vscode.window.showErrorMessage(`Henry Refactors | Unexpected error type '${typeof err}' - ${err}`);
+                vscode.window.showErrorMessage(`${preface} | Unexpected error type '${typeof err}' - ${err}`);
             }
         }
     };
