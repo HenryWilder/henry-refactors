@@ -32,13 +32,21 @@ export const rangeStr = (range: vscode.Selection | vscode.Range): string => `[${
 export const rangeArrayStr = (ranges: readonly vscode.Selection[] | vscode.Range[]): string => '[' + ranges.map(rangeStr).join(',\n ') + ']';
 
 /**
+ * Lambda function that can be run without needing any parameters and without giving any returns.
+ * 
+ * *Named "Type O" for its similarity to type O- blood:*
+ * *having a featureless surface that doesn't interact poorly with other blood types.*
+ */
+export type TypeOLambda = () => void;
+
+/**
  * Promotes a standardized method for exception-handling with custom commands.
  * 
  * @param cmdCallback The command function this wrapper runs.
  * @returns A wrapper lambda function around the callback that takes no parameters and returns void.
  */
-export const hwCmd = (cmdCallback: () => void): (() => void) => {
-    const lambda = () => {
+export const hwCmd = (cmdCallback: TypeOLambda): TypeOLambda => {
+    const lambda: TypeOLambda = (): void => {
         try {
             cmdCallback();
         } catch (err) {
@@ -52,6 +60,29 @@ export const hwCmd = (cmdCallback: () => void): (() => void) => {
             } else {
                 vscode.window.showErrorMessage(`${preface} | Unexpected error type '${typeof err}' - ${err}`);
             }
+        }
+    };
+    return lambda;
+};
+
+/** This function should be wrapped with the `editorCommand` function. */
+export type EditorCommand = (editor: vscode.TextEditor, document: vscode.TextDocument) => void;
+
+/**
+ * Provides a standardized method for provding editor commands with the objects they need.
+ * 
+ * @param editorCmdCallback The editor command to wrap.
+ * @returns A {@linkcode TypeOLambda} wrapping the {@linkcode editorCmdCallback}.
+ */
+export const editorCommand = (editorCmdCallback: EditorCommand): TypeOLambda => {
+    /**
+     * The wrapper function for {@linkcode editorCmdCallback}.
+     * Its internals run every time it is called, the callback is not called without the wrapper being called.
+     */
+    const lambda: TypeOLambda = (): void => {
+        const editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+        if (!!editor) {
+            editorCmdCallback(editor, editor.document);
         }
     };
     return lambda;

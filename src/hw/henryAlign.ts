@@ -3,12 +3,11 @@ import * as utils from './utils';
 
 /**
  * Aligns selected text according to delimiters.
+ * @type {utils.EditorCommand}
+ * @alias cmdHenryAlign
  */
-export function henryAlign(): void {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) { return; }
+function henryAlign(editor: vscode.TextEditor, document: vscode.TextDocument): void {
 
-    const document = editor.document;
     const selections = editor.selections;
     console.log("Selections:\n", utils.rangeArrayStr(selections));
 
@@ -208,3 +207,5 @@ export function henryAlign(): void {
         }
     });
 }
+
+export const cmdHenryAlign: utils.EditorCommand = henryAlign;

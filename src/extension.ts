@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { hwCmd } from './hw/utils';
-import { hwCommands } from './hw/hwcommands';
+import { hwCommands } from './hw/index';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Henry Refactors is now active');
