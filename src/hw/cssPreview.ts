@@ -50,14 +50,18 @@ function getWebviewContent(css: string, html: string): string {
  */
 function constructHTMLFromCSSSelectors(css: string): string {
     console.log("Searching for selectors in:", css);
-    const brokenUp: string[] = css.split(/[{.*}]/gm).map((str: string) => str.replace(/[\n\r]/g, ' ').replace(/\s{2,}/g, ' ').trim()).filter((str: string) => str.length !== 0);
-    console.log(brokenUp);
-    const selectors: string[] = brokenUp;
+    const selectors: string[] = css
+        .replace(/[\n\r]/g, ' ')
+        .split(/{.*?}/g)
+        .map((str: string) => str.trim().replace(/  +/g, ' '))
+        .filter((str: string) => (str.length !== 0))
+        .join(';').replace(/,;/g, ',').split(';');
+    console.log(selectors);
 
     if (selectors === null) {
         console.log("No selectors found");
         return '<p>No selectors could be identified :(</p>';
     }
 
-    return `<div></div>`;
+    return `<div>Test successful!</div>`;
 }
