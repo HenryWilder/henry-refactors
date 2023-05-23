@@ -35,19 +35,23 @@ export const rangeArrayStr = (ranges: readonly vscode.Selection[] | vscode.Range
  * Promotes a standardized method for exception-handling with custom commands.
  * 
  * @param cmdCallback The command function this wrapper runs.
+ * @returns A wrapper lambda function around the callback that takes no parameters and returns void.
  */
-export const hwCmd = (cmdCallback: () => void) => {
-    try {
+export const hwCmd = (cmdCallback: () => void): (() => void) => {
+    const lambda = () => {
+        try {
+            cmdCallback();
+        } catch (err) {
+            console.error(err);
 
-        cmdCallback();
-
-    } catch (err) {
-        console.error(err);
-
-        if (typeof err === 'string') {
-            vscode.window.showErrorMessage(`Henry Refactors | ${err}`);
-        } else if (err instanceof Error) {
-            vscode.window.showErrorMessage(`Henry Refactors | ${err.name}: ${err.message} ${err?.stack}`);
+            if (typeof err === 'string') {
+                vscode.window.showErrorMessage(`Henry Refactors | ${err}`);
+            } else if (err instanceof Error) {
+                vscode.window.showErrorMessage(`Henry Refactors | ${err.name}: ${err.message} ${err?.stack}`);
+            } else {
+                vscode.window.showErrorMessage(`Henry Refactors | Unexpected error type '${typeof err}' - ${err}`);
+            }
         }
-    }
+    };
+    return lambda;
 };

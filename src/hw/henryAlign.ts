@@ -8,7 +8,7 @@ export namespace hwcommands {
     /**
      * @function
      */
-	export const henryAlign = (): void => {
+	export function henryAlign(): void {
         const editor = vscode.window.activeTextEditor;
         if (!editor) { return; }
 
