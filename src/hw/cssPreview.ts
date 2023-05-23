@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import * as utils from './utils';
+import { noBlanks } from './utils';
+import expand from 'emmet';
 
 /**
  * Displays a small preview of a generic HTML element with the selected CSS applied.
@@ -10,18 +12,17 @@ import * as utils from './utils';
  * @alias cmdCssPreview
  */
 function cssPreview(editor: vscode.TextEditor, document: vscode.TextDocument): void {
-    const selection: vscode.Selection = editor.selection;
-    const css: string = document.getText(selection);
-    const html: string = constructHTMLFromCSSSelectors(css);
-
     const viewType: string = "html";
     const title: string = "CSS Preview";
     const showOptions: vscode.ViewColumn = vscode.ViewColumn.Beside;
 
     const panel: vscode.WebviewPanel = vscode.window.createWebviewPanel(viewType, title, showOptions);
-    panel.webview.html = getWebviewContent(css, html);
-
     // ! How do we make sure the webview is safely disposed? Is that our job?
+
+    const selection: vscode.Selection = editor.selection;
+    const css: string = document.getText(selection);
+    const html: string = constructHTMLFromCSSSelectors(css);
+    panel.webview.html = getWebviewContent(css, html);
 
     return;
 }
@@ -43,25 +44,44 @@ function getWebviewContent(css: string, html: string): string {
 </html>`;
 }
 
-/**
- * Generates an HTML body from raw CSS.
- * @param css The CSS code to use as a blueprint for our HMTL.
- * @returns 
- */
-function constructHTMLFromCSSSelectors(css: string): string {
+function getSelectors(css: string): string[] {
     console.log("Searching for selectors in:", css);
     const selectors: string[] = css
         .replace(/[\n\r]/g, ' ')
         .split(/{.*?}/g)
         .map((str: string) => str.trim().replace(/  +/g, ' '))
-        .filter((str: string) => (str.length !== 0))
-        .join(';').replace(/,;/g, ',').split(';');
-    console.log(selectors);
+        .filter(noBlanks)
+        .join(';').replace(/,;/g, ',').split(';')
+        .map((sel: string) => sel
+            .replace(/, /g, ',')
+            .replace(/\s([+>~])\s/g, '$1'));
+    console.log('selectors', selectors);
+    return selectors;
+}
 
-    if (selectors === null) {
-        console.log("No selectors found");
-        return '<p>No selectors could be identified :(</p>';
-    }
+/**
+ * Generates an HTML body from raw CSS.
+ * @param css The CSS code to use as a blueprint for our HMTL.
+ * @returns An HTML string.
+ */
+function constructHTMLFromCSSSelectors(css: string): string {
+    const selectors: string[] = getSelectors(css);
+    console.log('selectors', selectors);
+    const elements: string[] = selectors.map((selector: string): string => expand(selector));
+    console.log('elements', elements);
+
+    return elements.join('\n');
+}
+
+/**
+ * Finds annotating comments using "@example" in the provided CSS and uses them to produce HTML examples.
+ * @param css The CSS code to search for annotation comments to use as a blueprint for our HMTL.
+ * @returns An HTML string.
+ * @todo
+ */
+function constructHTMLFromAnnotation(css: string): string {
+
+    // TODO
 
     return `<div>Test successful!</div>`;
 }

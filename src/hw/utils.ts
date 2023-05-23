@@ -87,3 +87,10 @@ export const editorCommand = (editorCmdCallback: EditorCommand): TypeOLambda => 
     };
     return lambda;
 };
+
+/**
+ * A filter lambda for removing all blank strings from an array.
+ * @param str The string to test. This will be provided by the filter.
+ * @returns True if nonblank, false if blank.
+ */
+export const noBlanks = (str: string): boolean => str.length !== 0;
