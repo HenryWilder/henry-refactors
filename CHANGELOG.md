@@ -13,3 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "Henry Align" command
 - This changelog
+
+## [0.0.2] - 2023-05-23
+
+### Added
+
+- "CSS Preview" command

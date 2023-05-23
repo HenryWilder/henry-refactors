@@ -16,6 +16,10 @@
       {
         "command": "henryrefactors.henryAlign",
         "title": "Henry Align"
+      },
+      {
+        "command": "henryrefactors.cssPreview",
+        "title": "CSS Preview"
       }
     ]
   },

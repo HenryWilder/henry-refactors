@@ -208,4 +208,5 @@ function henryAlign(editor: vscode.TextEditor, document: vscode.TextDocument): v
     });
 }
 
+/** @inheritdoc */
 export const cmdHenryAlign: utils.EditorCommand = henryAlign;
