@@ -1,0 +1,26 @@
+div.test {
+    width: 50px;
+    height: 20px;
+}
+
+.apple,
+.orange,
+.banana {
+    background-color: blue;
+}
+
+.mango
+.cherry {
+   background-color: red
+}
+
+#scree { color: orange }
+
+.ancester {
+    border: 1px solid green;
+    padding: 10px;
+}
+
+.ancester .decendent {
+    border: 1px solid green;
+}

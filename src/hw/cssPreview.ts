@@ -13,11 +13,10 @@ import expand from 'emmet';
  */
 function cssPreview(editor: vscode.TextEditor, document: vscode.TextDocument): void {
     const viewType: string = "html";
-    const title: string = "CSS Preview";
+    const title: string = "Henrian CSS Preview";
     const showOptions: vscode.ViewColumn = vscode.ViewColumn.Beside;
 
     const panel: vscode.WebviewPanel = vscode.window.createWebviewPanel(viewType, title, showOptions);
-    // ! How do we make sure the webview is safely disposed? Is that our job?
 
     const selection: vscode.Selection = editor.selection;
     const css: string = document.getText(selection);
@@ -44,20 +43,29 @@ function getWebviewContent(css: string, html: string): string {
 </html>`;
 }
 
-function getSelectors(css: string): string[] {
+const getSelectors = (css: string): string[] => {
     console.log("Searching for selectors in:", css);
     const selectors: string[] = css
         .replace(/[\n\r]/g, ' ')
         .split(/{.*?}/g)
         .map((str: string) => str.trim().replace(/  +/g, ' '))
-        .filter(noBlanks)
-        .join(';').replace(/,;/g, ',').split(';')
-        .flatMap((e: string) => e.split(/,\s*/g)) // ! Untested
-        .map((sel: string) => sel
-            .replace(/\s([+>~])\s/g, '$1')); // ! Remember to remove the spaces between delimiters so that emmet doesn't get angy
+        .filter(noBlanks);
     console.log('selectors', selectors);
     return selectors;
-}
+};
+
+const processSelectors = (selectorsRaw: string[]): string[] => {
+    const selectors: string[] = selectorsRaw
+        .join(';').replace(/,;/g, ',').split(';')
+        .flatMap((e: string) => e.split(/,\s*/g))
+        .map((sel: string) => sel
+            .replace(/\s([+>~])\s/g, '$1')
+            .replace(/\s/g, '>span>')
+            + '>lorem10'
+        );
+    console.log('selectors', selectors);
+    return selectors;
+};
 
 /**
  * Generates an HTML body from raw CSS.
@@ -65,12 +73,20 @@ function getSelectors(css: string): string[] {
  * @returns An HTML string.
  */
 function constructHTMLFromCSSSelectors(css: string): string {
-    const selectors: string[] = getSelectors(css);
+    const selectorsRaw: string[] = getSelectors(css);
+    console.log('selectorsRaw', selectorsRaw);
+    const selectors: string[] = processSelectors(selectorsRaw);
     console.log('selectors', selectors);
     const elements: string[] = selectors.map((selector: string): string => expand(selector));
     console.log('elements', elements);
 
-    return elements.join('\n');
+    let result = '';
+    console.assert(elements.length === selectors.length, "Expected equal number of selectors and elements");
+    for (let i = 0; i < elements.length; ++i) {
+        result += `<h2>${selectorsRaw[i]}</h2>\n${elements[i]}`;
+    }
+
+    return result;
 }
 
 /**
