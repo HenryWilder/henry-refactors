@@ -30,3 +30,24 @@ export const rangeStr = (range: vscode.Selection | vscode.Range): string => `[${
  * ```
  */
 export const rangeArrayStr = (ranges: readonly vscode.Selection[] | vscode.Range[]): string => '[' + ranges.map(rangeStr).join(',\n ') + ']';
+
+/**
+ * Promotes a standardized method for exception-handling with custom commands.
+ * 
+ * @param cmdCallback The command function this wrapper runs.
+ */
+export const hwCmd = (cmdCallback: () => void) => {
+    try {
+
+        cmdCallback();
+
+    } catch (err) {
+        console.error(err);
+
+        if (typeof err === 'string') {
+            vscode.window.showErrorMessage(`Henry Refactors | ${err}`);
+        } else if (err instanceof Error) {
+            vscode.window.showErrorMessage(`Henry Refactors | ${err.name}: ${err.message} ${err?.stack}`);
+        }
+    }
+};
