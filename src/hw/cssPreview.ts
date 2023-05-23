@@ -52,9 +52,9 @@ function getSelectors(css: string): string[] {
         .map((str: string) => str.trim().replace(/  +/g, ' '))
         .filter(noBlanks)
         .join(';').replace(/,;/g, ',').split(';')
+        .flatMap((e: string) => e.split(/,\s*/g)) // ! Untested
         .map((sel: string) => sel
-            .replace(/, /g, ',')
-            .replace(/\s([+>~])\s/g, '$1'));
+            .replace(/\s([+>~])\s/g, '$1')); // ! Remember to remove the spaces between delimiters so that emmet doesn't get angy
     console.log('selectors', selectors);
     return selectors;
 }
