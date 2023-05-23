@@ -5,10 +5,10 @@ import { hwCommands } from './hw/index';
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Henry Refactors is now active');
 
-	for (const cmdCallback of hwCommands) {
-		const commandName = `henryrefactors.${cmdCallback.name}`;
+	for (const cmdInfo of hwCommands) {
+		const commandName = `henryrefactors.${cmdInfo.name}`;
 		console.log(`Registering command: '${commandName}'`);
-		const disposable = vscode.commands.registerCommand(commandName, hwCmd(cmdCallback));
+		const disposable = vscode.commands.registerCommand(commandName, hwCmd(cmdInfo.func));
 		context.subscriptions.push(disposable);
 	}
 }

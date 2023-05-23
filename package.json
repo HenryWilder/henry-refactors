@@ -15,11 +15,13 @@
     "commands": [
       {
         "command": "henryrefactors.henryAlign",
-        "title": "Henry Align"
+        "title": "Henry Align",
+        "category": "Henry Refactors"
       },
       {
         "command": "henryrefactors.cssPreview",
-        "title": "CSS Preview"
+        "title": "CSS Preview",
+        "category": "Henry Refactors"
       }
     ]
   },
