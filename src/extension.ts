@@ -1,7 +1,10 @@
 import * as vscode from 'vscode';
 import { hwCmd } from './hw/utils';
 import { hwCommands } from './hw/index';
-import { PaletteProvider, namedColors, commonColors, favoriteColors } from './hw/palette';
+import { PaletteProvider } from './hw/palette';
+import namedColors from './colors/named-colors';
+import commonColors from './colors/common-colors';
+import favoriteColors from './colors/favorite-colors';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Henry Refactors is now active');
