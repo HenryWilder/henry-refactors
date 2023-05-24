@@ -40,7 +40,13 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         webviewView.title = this.title;
 
         const list = this.colorList.map((e: NamedColor) => {
-            return `<div class="palette-item" style="background-color:${e.value};color:${colorContrast(e.value)}">${e.name}</div>`;
+            return `
+<div class="palette-item-container" title="${e.name} - ${e.value}">
+    <div class="palette-item" style="--palette-item-color:${e.value}; color:${colorContrast(e.value)}">
+        <b>${e.name}</b><br/>
+        <c>${e.value}</c>
+    </div>
+</div>`;
         });
 
         webviewView.webview.html = `
@@ -50,16 +56,33 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     <style>
         #palette {
             display: flex;
-            flex-flow: column nowrap;
+            flex-flow: row wrap;
             align-items: stretch;
-            gap: 5px;
+            gap: 0px;
+            padding-block: 10px;
+        }
+        .palette-item-container {
+            padding: 5px;
+            cursor: default;
+            box-sizing: border-box;
         }
         .palette-item {
+            background-color: var(--palette-item-color);
             padding: 10px;
-            border-radius: 5px;
+            width: 2in;
+            height: 1in;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: content;
+            text-align: right;
+            font-size: var(--vscode-font-size);
         }
-        .palette-item:hover {
-            outline: 2px solid var(--vscode-editor-foreground);
+        .palette-item-container:hover .palette-item {
+            outline: 2px solid white;
+        }
+        c {
+            font-size: var(--vscode-editor-font-size);
+            font-family: var(--vscode-editor-font-family), monospace;
         }
     </style>
 </head>
