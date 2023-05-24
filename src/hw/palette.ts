@@ -38,6 +38,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         token: vscode.CancellationToken
     ): Thenable<void> | void {
         webviewView.title = this.title;
+        webviewView.webview.options = { enableScripts: true };
 
         const list = this.colorList.map((e: NamedColor) => {
             return `
@@ -49,8 +50,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
 </div>`;
         });
 
-        webviewView.webview.html = `
-<!DOCTYPE html>
+        webviewView.webview.html = `<!DOCTYPE html>
 <html>
 <head>
     <style>
@@ -63,7 +63,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         }
         .palette-item-container {
             padding: 5px;
-            cursor: default;
+            cursor: pointer;
             box-sizing: border-box;
         }
         .palette-item {
@@ -90,7 +90,30 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     <div id="palette">
         ${list.join('\n')}
     </div>
+    <script>
+        console.log('Hello world');
+        const vscode = acquireVsCodeApi();
+        try {
+            document.querySelectorAll('.palette-item-container').forEach((el) => {
+                el.addEventListener('click', () => {
+                    vscode.postMessage({ command: 'get-data', body: el.title });
+                    console.log('Ready to accept data.');
+                });
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    </script>
 </body>
 </html>`;
+        webviewView.webview.onDidReceiveMessage(
+            (msg) => {
+                switch (msg.command) {
+                    case 'get-data':
+                        vscode.env.clipboard.writeText(msg.body);
+                        break;
+                }
+            }
+        );
     }
 }
