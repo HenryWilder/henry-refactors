@@ -18,14 +18,9 @@ import expand from 'emmet';
  * and it can't possibly be very good for the performance...
  */
 function _cssPreview(editor: vscode.TextEditor, document: vscode.TextDocument): void {
-    const viewType: string = "html";
-    const title: string = "Henrian CSS Preview";
-    const showOptions: vscode.ViewColumn = vscode.ViewColumn.Beside;
+    const panel: vscode.WebviewPanel = vscode.window.createWebviewPanel("html", "Henrian CSS Preview", vscode.ViewColumn.Beside);
 
-    const panel: vscode.WebviewPanel = vscode.window.createWebviewPanel(viewType, title, showOptions);
-
-    const selection: vscode.Selection = editor.selection;
-    const selectedCss: string = document.getText(selection);
+    const selectedCss: string = document.getText(editor.selection);
     const css: string = document.getText();
     const html: string = constructHTMLFromCSSSelectors(selectedCss);
     panel.webview.html = getWebviewContent(css, html);

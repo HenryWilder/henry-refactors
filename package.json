@@ -12,6 +12,31 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "web-palette",
+          "title": "Web Palette",
+          "icon": "resources/web-palette.svg"
+        }
+      ]
+    },
+    "views": {
+      "web-palette": [
+        {
+          "id": "named-colors",
+          "name": "Named Colors"
+        },
+        {
+          "id": "common",
+          "name": "Common colors"
+        },
+        {
+          "id": "favorites",
+          "name": "Favorites"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "henryrefactors.henryAlign",
