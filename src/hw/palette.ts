@@ -85,7 +85,8 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         }
         c {
             font-size: var(--vscode-editor-font-size);
-            font-family: var(--vscode-editor-font-family), monospace;
+            font-family: var(--vscode-editor-font-family);
+            font-weight: var(--vscode-editor-font-weight);
         }
     </style>
 </head>
