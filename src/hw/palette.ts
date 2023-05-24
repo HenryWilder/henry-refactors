@@ -42,7 +42,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
 
         const list = this.colorList.map((e: NamedColor) => {
             return `
-<div class="palette-item-container" title="${e.name} - ${e.value}">
+<div class="palette-item-container" title="${e.name} | ${e.value}">
     <div class="palette-item" style="--palette-item-color:${e.value}; color:${colorContrast(e.value)}">
         <b>${e.name}</b><br/>
         <c>${e.value}</c>
@@ -80,6 +80,9 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         .palette-item-container:hover .palette-item {
             outline: 2px solid white;
         }
+        .palette-item>b:hover {
+            text-decoration: underline;
+        }
         c {
             font-size: var(--vscode-editor-font-size);
             font-family: var(--vscode-editor-font-family), monospace;
@@ -93,16 +96,17 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     <script>
         console.log('Hello world');
         const vscode = acquireVsCodeApi();
-        try {
-            document.querySelectorAll('.palette-item-container').forEach((el) => {
-                el.addEventListener('click', () => {
-                    vscode.postMessage({ command: 'get-data', body: el.title });
-                    console.log('Ready to accept data.');
-                });
+        document.querySelectorAll('.palette-item-container').forEach((el) => {
+            el.addEventListener('click', (event) => {
+                let messageBody = '';
+                const [itemName, itemValue] = el.title.split(' | ');
+                if (event.target.tagName === 'B')
+                    messageBody = itemName;
+                else
+                    messageBody = itemValue;
+                vscode.postMessage({ command: 'get-data', body: messageBody });
             });
-        } catch (err) {
-            console.error(err);
-        }
+        });
     </script>
 </body>
 </html>`;
