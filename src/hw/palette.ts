@@ -6,31 +6,10 @@ interface NamedColor {
     name: string;
     value: string;
 }
-
-interface ColorCategory {
-    label: string;
-    items: (ColorCategory | NamedColor)[];
-}
-
-const knownColors: ColorCategory[] = [
-    {
-        label: "Warm",
-        items: [
-            {
-                label: "Red",
-                items: [
-                    { name: "Tomato", value: "tomato" },
-                    { name: "Red", value: "#f00" },
-                ]
-            },
-            {
-                label: "orange",
-                items: [
-                    { name: "Orange", value: "orange" },
-                ]
-            },
-        ]
-    },
+const namedColors: NamedColor[] = [
+    { name: "Red", value: "red" },
+    { name: "Orange", value: "orange" },
+    { name: "Yellow", value: "yellow" },
 ];
 
 export class PaletteProvider implements vscode.TreeDataProvider<PaletteColor> {
@@ -42,50 +21,16 @@ export class PaletteProvider implements vscode.TreeDataProvider<PaletteColor> {
 
     getChildren(element?: PaletteColor): Thenable<PaletteColor[]> {
         if (element) {
-            return Promise.resolve(this.getColorItems(element));
+            return Promise.resolve([]);
         } else {
-            return Promise.resolve(this.getColorItems());
-        }
-    }
-
-    private getColorItems(treeItem?: PaletteColor): PaletteColor[] {
-        if (treeItem && treeItem.data) {
-            return treeItem.data.map((item: ColorCategory | NamedColor): PaletteColor | null => {
-                if (item as NamedColor) {
-                    return paletteColorFromNamedColor(item as NamedColor);
-                } else if (item as ColorCategory) {
-                    return paletteColorFromColorCategory(item as ColorCategory);
-                } else {
-                    return null;
-                }
-            })
-                .filter((item: PaletteColor | null) => item !== null)
-                .map((e: PaletteColor | null) => e!);
-        } else if (!treeItem) {
-            return knownColors.map((item: ColorCategory | NamedColor): PaletteColor => {
-                if (item as NamedColor) {
-                    return paletteColorFromNamedColor(item as NamedColor);
-                } else {
-                    return paletteColorFromColorCategory(item as ColorCategory);
-                }
-            });
-        } else {
-            return [];
+            return Promise.resolve(namedColors.map((color: NamedColor) => new PaletteColor(color.name, color.value)));
         }
     }
 }
 
-const paletteColorFromNamedColor = (item: NamedColor): PaletteColor => {
-    return new PaletteColor(item.name, undefined, item.value);
-};
-const paletteColorFromColorCategory = (item: ColorCategory): PaletteColor => {
-    return new PaletteColor(item.label, item.items, "");
-};
-
 class PaletteColor extends vscode.TreeItem {
     constructor(
         public readonly label: string,
-        public readonly data: (ColorCategory | NamedColor)[] | undefined,
         private readonly value: string,
         public readonly collapsibleState?: vscode.TreeItemCollapsibleState
     ) {
