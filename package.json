@@ -24,14 +24,17 @@
     "views": {
       "web-palette": [
         {
+          "type": "webview",
           "id": "named-colors",
           "name": "Named Colors"
         },
         {
+          "type": "webview",
           "id": "common",
           "name": "Common colors"
         },
         {
+          "type": "webview",
           "id": "favorites",
           "name": "Favorites"
         }

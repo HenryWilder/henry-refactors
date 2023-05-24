@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { hwCmd } from './hw/utils';
 import { hwCommands } from './hw/index';
-import { PaletteProvider } from './hw/palette';
+import { PaletteProvider, namedColors } from './hw/palette';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Henry Refactors is now active');
@@ -14,6 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 }
 
-vscode.window.registerTreeDataProvider('named-colors', new PaletteProvider());
+const namedColorsViewProvider = new PaletteProvider("Named Colors", namedColors);
+vscode.window.registerWebviewViewProvider('named-colors', namedColorsViewProvider);
 
 export function deactivate() { }

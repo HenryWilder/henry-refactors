@@ -1,47 +1,48 @@
 import * as vscode from 'vscode';
 import * as utils from './utils';
-import * as path from 'path'; // Will be used for icons
 
 interface NamedColor {
     name: string;
     value: string;
+    /**
+     * A color that contrasts well with this color,
+     * so that the name is visible against the background.
+     */
+    contrast: string;
 }
-const namedColors: NamedColor[] = [
-    { name: "Red", value: "red" },
-    { name: "Orange", value: "orange" },
-    { name: "Yellow", value: "yellow" },
+export const namedColors: NamedColor[] = [
+    { name: "Red", value: "red", contrast: "black" },
+    { name: "Orange", value: "orange", contrast: "black" },
+    { name: "Yellow", value: "yellow", contrast: "black" },
 ];
 
-export class PaletteProvider implements vscode.TreeDataProvider<PaletteColor> {
-    constructor() { }
-
-    getTreeItem(element: PaletteColor): vscode.TreeItem {
-        return element;
-    }
-
-    getChildren(element?: PaletteColor): Thenable<PaletteColor[]> {
-        if (element) {
-            return Promise.resolve([]);
-        } else {
-            return Promise.resolve(namedColors.map((color: NamedColor) => new PaletteColor(color.name, color.value)));
-        }
-    }
-}
-
-class PaletteColor extends vscode.TreeItem {
+export class PaletteProvider implements vscode.WebviewViewProvider {
     constructor(
-        public readonly label: string,
-        private readonly value: string,
-        public readonly collapsibleState?: vscode.TreeItemCollapsibleState
-    ) {
-        super(label, collapsibleState);
-        this.tooltip = `${this.label}-${this.value}`;
-        this.description = this.value;
-    }
+        private title: string,
+        private colorList: NamedColor[],
+    ) { }
 
-    // Todo: icons
-    // iconPath = {
-    //     light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-    //     dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-    // };
+    resolveWebviewView(
+        webviewView: vscode.WebviewView,
+        context: vscode.WebviewViewResolveContext,
+        token: vscode.CancellationToken
+    ): Thenable<void> | void {
+        webviewView.title = this.title;
+        webviewView.webview.html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* todo */
+        .palette-item {
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    ${this.colorList.map((e: NamedColor) => `<div class="palette-item" style="background-color:${e.value};color:${e.value}">${e.name}</div>`)}
+</body>
+</html>`;
+    }
 }
