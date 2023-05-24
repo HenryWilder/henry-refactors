@@ -78,7 +78,10 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             font-size: var(--vscode-font-size);
         }
         .palette-item-container:hover .palette-item {
-            outline: 2px solid white;
+            outline: 2px dashed white;
+        }
+        .palette-item-container:active .palette-item {
+            outline-style: solid;
         }
         .palette-item>b:hover {
             text-decoration: underline;
@@ -116,6 +119,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
                 switch (msg.command) {
                     case 'get-data':
                         vscode.env.clipboard.writeText(msg.body);
+                        vscode.window.showInformationMessage(`"${msg.body}" has been copied`);
                         break;
                 }
             }

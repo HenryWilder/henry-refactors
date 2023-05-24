@@ -22,3 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Henrian CSS Preview webview (appears with "CSS Preview" command)
 - utils.noBlanks
 - utils.unique
+
+## [0.0.3] - 2023-05-24
+
+### Added
+
+- Web Palette
+
+### Changed
+
+- Version number in package.json (finally)
