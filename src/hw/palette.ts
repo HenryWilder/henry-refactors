@@ -1,9 +1,24 @@
 import * as vscode from 'vscode';
 import * as utils from './utils';
-import * as path from 'path';
+import * as path from 'path'; // Will be used for icons
+
+interface ColorCategory {
+    label: string;
+    items: string[];
+}
+
+const knownColors: ColorCategory[] = [
+    {
+        label: "red",
+        items: [
+            "tomato",
+            "red",
+        ]
+    },
+];
 
 export class PaletteProvider implements vscode.TreeDataProvider<PaletteColor> {
-    constructor(private workspaceRoot: string) { }
+    constructor() { }
 
     getTreeItem(element: PaletteColor): vscode.TreeItem {
         return element;
@@ -11,36 +26,33 @@ export class PaletteProvider implements vscode.TreeDataProvider<PaletteColor> {
 
     getChildren(element?: PaletteColor): Thenable<PaletteColor[]> {
         if (element) {
-            return Promise.resolve([]); // Placeholder
-        } else { // I'm confused when element would be null/undefined. Why would you call this on nothing?
-            return Promise.resolve([]); // Not a placeholder
+            return Promise.resolve(this.getColorItems());
+        } else {
+            return Promise.resolve([]);
         }
+    }
+
+    private getColorItems(): PaletteColor[] {
+        return knownColors.map((category: ColorCategory) => {
+            return new PaletteColor(category.label, category.items[0], vscode.TreeItemCollapsibleState.Collapsed);
+        });
     }
 }
 
 class PaletteColor extends vscode.TreeItem {
     constructor(
         public readonly label: string,
-        private version: string,
+        private readonly value: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
         super(label, collapsibleState);
-        this.tooltip = `${this.label}-${this.version}`;
-        this.description = this.version;
+        this.tooltip = `${this.label}-${this.value}`;
+        this.description = this.value;
     }
 
-    iconPath = {
-        light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
-        dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
-    };
+    // Todo: icons
+    // iconPath = {
+    //     light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
+    //     dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
+    // };
 }
-
-const rootPath =
-    vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
-        ? vscode.workspace.workspaceFolders[0].uri.fsPath
-        : undefined;
-
-vscode.window.registerTreeDataProvider(
-    'nodeDependencies',
-    new PaletteProvider(rootPath)
-);
