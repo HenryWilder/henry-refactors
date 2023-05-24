@@ -12,14 +12,15 @@ export const getBrightness = (r: number, g: number, b: number): number => {
 const colorContrast = (hexColor: string): string => {
     const rx: RegExp = /#([0-9A-Z]{2})([0-9A-Z]{2})([0-9A-Z]{2})/i;
     const sections: RegExpExecArray | null = rx.exec(hexColor);
-    console.log(sections);
     if (sections) {
         const [r, g, b]: [number, number, number] = [
-            Number(sections[1]),
-            Number(sections[2]),
-            Number(sections[3]),
+            Number('0x'+sections[1]),
+            Number('0x'+sections[2]),
+            Number('0x'+sections[3]),
         ];
-        return getBrightness(r, g, b) < 0.55 ? "white" : "black";
+        const brightness = getBrightness(r, g, b);
+        const result = brightness < 0.55 ? "white" : "black";
+        return result;
     } else {
         return "magenta";
     }
@@ -37,21 +38,34 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         token: vscode.CancellationToken
     ): Thenable<void> | void {
         webviewView.title = this.title;
+
+        const list = this.colorList.map((e: NamedColor) => {
+            return `<div class="palette-item" style="background-color:${e.value};color:${colorContrast(e.value)}">${e.name}</div>`;
+        });
+
         webviewView.webview.html = `
 <!DOCTYPE html>
 <html>
 <head>
     <style>
-        /* todo */
+        #palette {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: stretch;
+            gap: 5px;
+        }
         .palette-item {
             padding: 10px;
             border-radius: 5px;
         }
+        .palette-item:hover {
+            outline: 2px solid var(--vscode-editor-foreground);
+        }
     </style>
 </head>
 <body>
-    <div>
-        ${this.colorList.map((e: NamedColor) => `<div class="palette-item" style="background-color:${e.value};color:${colorContrast(e.value)}">${e.name}</div>`).join('\n')}
+    <div id="palette">
+        ${list.join('\n')}
     </div>
 </body>
 </html>`;
