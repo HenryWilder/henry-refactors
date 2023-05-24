@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as utils from './utils';
-import { noBlanks, unique } from './utils';
+import { noBlanks } from './utils';
 import expand from 'emmet';
 
 /**
@@ -12,6 +12,10 @@ import expand from 'emmet';
  * squirrel icon
  * @type {utils.EditorCommand}
  * @alias cssPreview
+ * @todo
+ * This really, REALLY needs to be changed to update the same panel that's already
+ * open instead of creating a new panel every time. It feels clunky and annoying
+ * and it can't possibly be very good for the performance...
  */
 function _cssPreview(editor: vscode.TextEditor, document: vscode.TextDocument): void {
     const viewType: string = "html";
@@ -150,7 +154,6 @@ function constructHTMLFromCSSSelectors(css: string): string {
         const parts: string[] = selectorsRaw[i].split(',');
         console.log(`${selectorsRaw[i]} has`, parts.length);
         for (let j_ = 0; j_ < parts.length; ++j_, ++j) {
-            // Todo: Make the colors of the header and stuff match the theme colors
             result += `
 <details class="henryrefactors-outline">
     <summary>
@@ -168,17 +171,4 @@ function constructHTMLFromCSSSelectors(css: string): string {
     }
 
     return result;
-}
-
-/**
- * Finds annotating comments using "@example" in the provided CSS and uses them to produce HTML examples.
- * @param css The CSS code to search for annotation comments to use as a blueprint for our HMTL.
- * @returns An HTML string.
- * @todo
- */
-function constructHTMLFromAnnotation(css: string): string {
-
-    // TODO
-
-    return `<div>Test successful!</div>`;
 }

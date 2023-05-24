@@ -19,3 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - "CSS Preview" command
+- Henrian CSS Preview webview (appears with "CSS Preview" command)
+- utils.noBlanks
+- utils.unique
