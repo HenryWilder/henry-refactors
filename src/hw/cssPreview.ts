@@ -23,7 +23,7 @@ function _cssPreview(editor: vscode.TextEditor, document: vscode.TextDocument): 
     const selection: vscode.Selection = editor.selection;
     const selectedCss: string = document.getText(selection);
     const css: string = document.getText();
-    const html: string = constructHTMLFromCSSSelectors(selectedCss, css);
+    const html: string = constructHTMLFromCSSSelectors(selectedCss);
     panel.webview.html = getWebviewContent(css, html);
     console.log(panel.webview.html);
 
@@ -38,10 +38,10 @@ function getWebviewContent(css: string, html: string): string {
 <html lang = "en">
 <head>
     <style>
-        
+        ${css}
     </style>
 </head>
-<body>
+<body style="background-color:var(--vscode-editor-background);color:var(--vscode-editor-foreground);">
     ${html}
 </body>
 </html>`;
@@ -51,6 +51,7 @@ const getSelectors = (css: string): string[] => {
     // console.log("Searching for selectors in:", css);
     const selectors: string[] = css
         .replace(/[\n\r]/g, ' ')
+        .replace(/\/\*.*?\*\//g, '') // Remove comments
         .split(/{.*?}/g)
         .map((str: string) => str.trim().replace(/  +/g, ' '))
         .filter(noBlanks);
@@ -76,8 +77,8 @@ const processSelectors = (selectorsRaw: string[]): string[] => {
  * @param css The CSS code to use as a blueprint for our HMTL.
  * @returns An HTML string.
  */
-function constructHTMLFromCSSSelectors(selectionCSS: string, css: string): string {
-    const selectorsRaw: string[] = getSelectors(selectionCSS);
+function constructHTMLFromCSSSelectors(css: string): string {
+    const selectorsRaw: string[] = getSelectors(css);
     // console.log('selectorsRaw', selectorsRaw);
     const selectors: string[] = processSelectors(selectorsRaw);
     // console.log('selectors', selectors);
@@ -95,30 +96,15 @@ function constructHTMLFromCSSSelectors(selectionCSS: string, css: string): strin
         const parts: string[] = selectorsRaw[i].split(',');
         console.log(`${selectorsRaw[i]} has`, parts.length);
         for (let j_ = 0; j_ < parts.length; ++j_, ++j) {
-            
-            const frameContent: string = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        ${css}
-    </style>
-</head>
-<body>
-    ${elements[j]}
-</body>
-</html>`;
             // Todo: Make the colors of the header and stuff match the theme colors
             result += `
 <div style="display:flex;flex-flow:row wrap;gap:4ch;align-items:baseline;justify-content:flex-start;cursor:default;">
     <h2 style="display:inline-block">${parts[j_]}</h2>
     <i style="color:gray;">${selectors[j]}</i>
 </div>
-<iframe id="frame${j}"></iframe>
-<script>
-    const frame${j} = document.getElementById('frame${j}');
-    frame${j}.contentDocument.write(\`${frameContent}\`);
-</script>`;
+<div style="all:initial;">
+    ${elements[j]}
+</div>`;
         }
     }
 
