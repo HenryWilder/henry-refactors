@@ -4,9 +4,9 @@ import * as utils from './utils';
 /**
  * Aligns selected text according to delimiters.
  * @type {utils.EditorCommand}
- * @alias cmdHenryAlign
+ * @alias henryAlign
  */
-function henryAlign(editor: vscode.TextEditor, document: vscode.TextDocument): void {
+function _henryAlign(editor: vscode.TextEditor, document: vscode.TextDocument): void {
 
     const selections = editor.selections;
     console.log("Selections:\n", utils.rangeArrayStr(selections));
@@ -209,4 +209,4 @@ function henryAlign(editor: vscode.TextEditor, document: vscode.TextDocument): v
 }
 
 /** @inheritdoc */
-export const cmdHenryAlign: utils.EditorCommand = henryAlign;
+export const henryAlign: utils.EditorCommand = _henryAlign;
