@@ -94,3 +94,16 @@ export const editorCommand = (editorCmdCallback: EditorCommand): TypeOLambda => 
  * @returns True if nonblank, false if blank.
  */
 export const noBlanks = (str: string): boolean => str.length !== 0;
+
+/**
+ * A filter lambda for only getting unique elements of an array.
+ * 
+ * Prefer
+ * ```
+ * [...new Set(array)]
+ * ```
+ * for better performance.
+ */
+export function unique<T>(value: T, index: number, array: T[]): boolean {
+    return array.indexOf(value) === index;
+}

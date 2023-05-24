@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as utils from './utils';
-import { noBlanks } from './utils';
+import { noBlanks, unique } from './utils';
 import expand from 'emmet';
 
 /**
@@ -40,8 +40,62 @@ function getWebviewContent(css: string, html: string): string {
     <style>
         ${css}
     </style>
+    <style>
+        body#henryrefactors-truebody {
+            background-color: var(--vscode-editor-background);
+            color: var(--vscode-editor-foreground);
+            box-sizing: border-box;
+        }
+        details.henryrefactors-outline {
+            border-left: 1px solid var(--vscode-widget-border);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            margin-left: -1px;
+            padding-left: 3ch;
+            box-sizing: border-box;
+        }
+        details.henryrefactors-outline > summary {
+            display: flex;
+            flex-flow: row wrap;
+            gap: 4ch;
+            align-items: baseline;
+            justify-content: flex-start;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        details.henryrefactors-outline > summary > h2 {
+            display: inline-block;
+            box-sizing: border-box;
+            margin: 0;
+        }
+        details.henryrefactors-outline > summary > i {
+            color: gray;
+            box-sizing: border-box;
+        }
+        details.henryrefactors-outline > p {
+            font-family: monospace;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+            color: dodgerblue;
+        }
+        div.henryrefactors-frame-container {
+            background-color: white;
+            color: black;
+            border: 1px solid var(--vscode-widget-border);
+            padding: 10px;
+            width: 100%;
+            height: max-content;
+            box-sizing: border-box;
+            box-shadow: 0 0 20px 3px var(--vscode-widget-shadow), 0 5px 10px 2px var(--vscode-widget-shadow);
+        }
+        div.henryrefactors-frame-container > div.henryrefactors-frame {
+            all: initial;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
-<body style="background-color:var(--vscode-editor-background);color:var(--vscode-editor-foreground);">
+<body id="henryrefactors-truebody">
     ${html}
 </body>
 </html>`;
@@ -56,7 +110,7 @@ const getSelectors = (css: string): string[] => {
         .map((str: string) => str.trim().replace(/  +/g, ' '))
         .filter(noBlanks);
     // console.log('selectors', selectors);
-    return selectors;
+    return [...new Set(selectors)];
 };
 
 const processSelectors = (selectorsRaw: string[]): string[] => {
@@ -98,12 +152,17 @@ function constructHTMLFromCSSSelectors(css: string): string {
         for (let j_ = 0; j_ < parts.length; ++j_, ++j) {
             // Todo: Make the colors of the header and stuff match the theme colors
             result += `
-<div style="display:flex;flex-flow:row wrap;gap:4ch;align-items:baseline;justify-content:flex-start;cursor:default;">
-    <h2 style="display:inline-block">${parts[j_]}</h2>
-    <i style="color:gray;">${selectors[j]}</i>
-</div>
-<div style="all:initial;">
-    ${elements[j]}
+<details class="henryrefactors-outline">
+    <summary>
+        <h2>${parts[j_]}</h2>
+        <i>${selectors[j]}</i>
+    </summary>
+    <p>${elements[j].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+</details>
+<div class="henryrefactors-frame-container">
+    <div class="henryrefactors-frame">
+        ${elements[j]}
+    </div>
 </div>`;
         }
     }
