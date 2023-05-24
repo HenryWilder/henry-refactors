@@ -41,7 +41,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     </style>
 </head>
 <body>
-    ${this.colorList.map((e: NamedColor) => `<div class="palette-item" style="background-color:${e.value};color:${e.contrast}">${e.name}</div>`)}
+    ${this.colorList.map((e: NamedColor) => `<div class="palette-item" style="background-color:${e.value};color:${e.contrast}">${e.name}</div>`).join('\n')}
 </body>
 </html>`;
     }
