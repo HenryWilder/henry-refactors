@@ -61,9 +61,16 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
             font-size: var(--vscode-editor-font-size);
             color: var(--vscode-editor-foreground);
             background-color: var(--vscode-editor-background);
+            border: 1px solid var(--vscode-input-border, transparent);
             width: 100%;
-            flex-grow: 1;
-            resize: none;
+            resize: vertical;
+            padding: 3px;
+            box-sizing: border-box;
+            border-radius: 2px;
+        }
+        #languagecheck-container > textarea:focus {
+            outline: none;
+            border-color: var(--vscode-focusBorder, transparent);
         }
     </style>
 </head>
@@ -73,6 +80,7 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
             <span>Run</span>
         </button>
         <textarea id="henryrefactors-languagecheck-isolated-code-execution-field" placeholder="Start typing some code to test"></textarea>
+        <div id="henryrefactors-languagecheck-isolated-code-execution-output"></div>
     </div>
     <script>
         const vscode = acquireVsCodeApi();
@@ -90,8 +98,10 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
             (msg) => {
                 switch (msg.command) {
                     case 'run-prototype':
+                        vscode.window.showInformationMessage('Executing the code...');
                         console.log('Executing the code:', msg.body);
-                        utils.hwCmd(() => { Function(msg.body)(); });
+                        utils.hwCmd(() => Function(msg.body)());
+                        console.log('Execution complete.');
                         break;
                 }
             }
