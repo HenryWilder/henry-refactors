@@ -15,11 +15,11 @@ export interface ColorRGB255 {
 }
 
 /** @throws TypeError */
-export const validateRGB255 = (c: ColorRGB255): void | never => {
-    if (!
-        (0 <= c.r && c.r <= 255) &&
-        (0 <= c.g && c.g <= 255) &&
-        (0 <= c.b && c.b <= 255)) {
+export const assertRGB255 = (c: ColorRGB255): void | never => {
+    if (!(
+        (c.r === Math.floor(c.r) && 0 <= c.r && c.r <= 255) &&
+        (c.g === Math.floor(c.g) && 0 <= c.g && c.g <= 255) &&
+        (c.b === Math.floor(c.b) && 0 <= c.b && c.b <= 255))) {
         throw new TypeError("ColorRGB255 must be an integer between 0 and 255 inclusive");
     }
 };
@@ -37,11 +37,11 @@ export interface ColorRGB01 {
 }
 
 /** @throws TypeError */
-export const validateRGB01 = (c: ColorRGB01): void | never => {
-    if (!
+export const assertRGB01 = (c: ColorRGB01): void | never => {
+    if (!(
         (0.0 <= c.r && c.r <= 1.0) &&
         (0.0 <= c.g && c.g <= 1.0) &&
-        (0.0 <= c.b && c.b <= 1.0)) {
+        (0.0 <= c.b && c.b <= 1.0))) {
         throw new TypeError("ColorRGB01 must be an fraction/decimal between 0.0 and 1.0 inclusive");
     }
 };
@@ -72,6 +72,7 @@ export namespace ColorConvert {
     export namespace rgb255 {
         /** {@link ColorRGB255} => {@link ColorRGB01} */
         export const toRGB01 = (c: ColorRGB255): ColorRGB01 => {
+            assertRGB255(c);
             return {
                 r: c.r / 255.0,
                 g: c.g / 255.0,
@@ -84,6 +85,7 @@ export namespace ColorConvert {
     export namespace rgb01 {
         /** {@link ColorRGB01} => {@link ColorHSL} */
         export const toHSL = (c: ColorRGB01): ColorHSL => {
+            assertRGB01(c);
             const l = Math.max(c.r, c.g, c.b);
             const s = l - Math.min(c.r, c.g, c.b);
             const h = s
@@ -108,6 +110,7 @@ export namespace ColorConvert {
 
         /** {@link ColorRGB01} => {@link ColorRGB255} */
         export const toRGB255 = (c: ColorRGB01): ColorRGB255 => {
+            assertRGB01(c);
             return {
                 r: c.r * 255.0,
                 g: c.g * 255.0,
