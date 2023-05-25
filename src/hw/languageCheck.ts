@@ -85,23 +85,44 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
         <div id="henryrefactors-languagecheck-isolated-code-execution-output"></div>
     </div>
     <script>
-        const vscode = acquireVsCodeApi();
-        const executeButton = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-button');
-        const codeField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-codeField');
-        executeButton.addEventListener('click', () => {
-            vscode.postMessage({ command: 'run-prototype', body: codeField.value, input: , output:  });
-        });
+        try {
+            const vscode = acquireVsCodeApi();
+            const executeButton = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-button');
+            const codeField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-code');
+            const inputField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-input');
+            const outputField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-output');
+            executeButton.addEventListener('click', () => {
+                vscode.postMessage({
+                    command: 'run-prototype',
+                    body: codeField.value,
+                    input: inputField.value,
+                });
+                vscode.onDidReceiveMessage(
+                    (msg) => {
+                        console.log('Received a message');
+                        console.log(msg);
+                        switch (msg.command) {
+                            case 'push-output':
+                                outputField.value = msg.body;
+                                break;
+                        }
+                    }
+                )
+            });
+        } catch(err) {
+            console.error(err);
+        }
     </script>
 </body>
 </html>`;
 
         // Handle click events
         webviewView.webview.onDidReceiveMessage(
-            (msg) => {
+            (msg: { command: string, body: string, input: string }) => {
                 switch (msg.command) {
                     case 'run-prototype':
                         vscode.window.showInformationMessage('Executing your code...');
-                        runUserInput(msg.body);
+                        runUserInput(msg.body, msg.input, webviewView.webview);
                         break;
                 }
             }
@@ -109,11 +130,14 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
     }
 }
 
-const runUserInput = (userCode: string) => {
+const runUserInput = (userCode: string, input: string, outputMsgSendTo: vscode.Webview) => {
     const oldLog = console.log;
     try {
         function henryRefactorsLog(message?: any, ...optionalParams: any[]) {
-            // DO MESSAGE HERE.
+            outputMsgSendTo.postMessage({
+                command: 'push-output',
+                body: [message, ...(optionalParams.map((e: any) => e.toString()))].join(' ')
+            });
             oldLog.apply(console, [message, ...optionalParams]);
         };
         console.log = henryRefactorsLog;
