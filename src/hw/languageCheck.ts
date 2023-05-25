@@ -73,6 +73,34 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
             outline: none;
             border-color: var(--vscode-focusBorder, transparent);
         }
+        #henryrefactors-languagecheck-isolated-code-execution-output {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .henryrefactors-msg-info,
+        .henryrefactors-msg-warn,
+        .henryrefactors-msg-err {
+            font-family: var(--vscode-repl-font-family);
+            font-size: var(--vscode-repl-font-size);
+            line-height: var(--vscode-repl-line-height);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            word-break: break-all;
+            -webkit-user-select: text;
+            cursor: text;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: transparent;
+        }
+        .henryrefactors-msg-info:hover,
+        .henryrefactors-msg-warn:hover,
+        .henryrefactors-msg-err:hover {
+            background-color: var(--vscode-list-hoverBackground);
+        }
+        .henryrefactors-msg-info { color: #3794ff; }
+        .henryrefactors-msg-warn { color: #E9AB17; }
+        .henryrefactors-msg-err  { color: #F85149; }
     </style>
 </head>
 <body>
@@ -103,7 +131,13 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
                 console.log(msg);
                 switch (msg.command) {
                     case 'push-output':
-                        outputField.innerText += msg.body;
+                        const logElement = document.createElement('div');
+                        logElement.classList.add('henryrefactors-msg-' + msg.type);
+                        logElement.innerText = msg.body;
+                        outputField.appendChild(logElement);
+                        break;
+                    case 'clear-output':
+                        outputField.innerHTML = '';
                         break;
                 }
             });
@@ -130,15 +164,36 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
 
 const runUserInput = (userCode: string, webview: vscode.Webview) => {
     try {
+        console.log('log');
+        console.warn('warn');
+        console.error('error');
         console.log("Executing", userCode);
+        webview.postMessage({ command: 'clear-output' });
         const logMethod = (message: any, ...optionalParams: any[]): void => {
             const msgBody: string = [message.toString(), ...(optionalParams.map((e) => e.toString()))].join(' ');
             webview.postMessage({
                 command: 'push-output',
                 body: msgBody,
+                type: 'info',
             });
         };
-        runUserCodeInIsolation(userCode, logMethod);
+        const warnMethod = (message: any, ...optionalParams: any[]): void => {
+            const msgBody: string = [message.toString(), ...(optionalParams.map((e) => e.toString()))].join(' ');
+            webview.postMessage({
+                command: 'push-output',
+                body: msgBody,
+                type: 'warn',
+            });
+        };
+        const errMethod = (message: any, ...optionalParams: any[]): void => {
+            const msgBody: string = [message.toString(), ...(optionalParams.map((e) => e.toString()))].join(' ');
+            webview.postMessage({
+                command: 'push-output',
+                body: msgBody,
+                type: 'err',
+            });
+        };
+        runUserCodeInIsolation(userCode, logMethod, warnMethod, errMethod);
     } catch (err) {
         console.error(err);
 
