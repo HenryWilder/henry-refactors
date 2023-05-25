@@ -4,6 +4,9 @@
   "description": "Custom refactors created by Henry",
   "version": "0.0.3",
   "repository": "https://github.com/HenryWilder/henry-refactors",
+  "galleryBanner": {
+    "color": "#bf00ff"
+  },
   "engines": {
     "vscode": "^1.78.0"
   },
