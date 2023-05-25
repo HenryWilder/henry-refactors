@@ -3,6 +3,7 @@
   "displayName": "Henry Refactors",
   "description": "Custom refactors created by Henry",
   "version": "0.0.3",
+  "repository": "https://github.com/HenryWilder/henry-refactors",
   "engines": {
     "vscode": "^1.78.0"
   },

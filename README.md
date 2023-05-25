@@ -1,71 +1,43 @@
-# henryrefactors README
+# Henry Refactors
 
-This is the README for your extension "henryrefactors". After writing up a brief description, we recommend including the following sections.
+Some neat little additions I just wanted to add for my own use. You can use them too if you like.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Henry Align
 
-For example if there is an image subfolder under your extension project workspace:
+An alignment command that aligns selected text by all special characters.
 
-\!\[feature X\]\(images/feature-x.png\)
+![Web Palette](images/henry-align-example.png)
+
+**Note:** Only works correctly with *multiple* selection. Lines will be concatenated if you select the full text all in one selection.
+
+### CSS Preview
+
+Preview selected CSS - uses Emmet to expand CSS selectors into HTML so you can preview your styles before creating the page.
+
+![Web Palette](images/css-preview-example1.png)
+
+Emmet expansions can also work on commented text if you highlight specifically the insides of the comment
+
+![Web Palette](images/css-preview-example2.png)
+
+### Web Palette
+
+A helpful panel for seeing many named colors that copy when clicked.
+
+![Web Palette](images/web-palette-example.png)
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Henry Align adds trailing whitespace
+- Henry Align doesn't necessarily align matching text sections
+- Running CSS Preview while not having text selected can cause errors
+- CSS Preview command must be re-executed to refresh, which creates a new webview instance every time
+- CSS Preview is not very flexible and can error easily in many situations. This includes the use of `:has()`, `:hover`, `::after`, and other things that cannot actually be expanded by Emmet.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+*The extension is still in development and not yet fully released.*
