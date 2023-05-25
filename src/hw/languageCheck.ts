@@ -87,6 +87,7 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
     <script>
         try {
             const vscode = acquireVsCodeApi();
+            console.log(vscode);
             const executeButton = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-button');
             const codeField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-code');
             const inputField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-input');
@@ -97,17 +98,15 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
                     body: codeField.value,
                     input: inputField.value,
                 });
-                vscode.onDidReceiveMessage(
-                    (msg) => {
-                        console.log('Received a message');
-                        console.log(msg);
-                        switch (msg.command) {
-                            case 'push-output':
-                                outputField.value = msg.body;
-                                break;
-                        }
-                    }
-                )
+            });
+            window.addEventListener('message', (event) => {
+                const msg = event.data;
+                console.log(msg);
+                switch (msg.command) {
+                    case 'push-output':
+                        outputField.value = msg.body;
+                        break;
+                }
             });
         } catch(err) {
             console.error(err);
