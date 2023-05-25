@@ -58,7 +58,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             font-size: var(--vscode-font-size);
         }
         .palette-item-container:hover .palette-item {
-            outline: 2px dashed white;
+            outline: 2px dashed var(--vscode-editor-foreground);
         }
         .palette-item-container:active .palette-item {
             outline-style: solid;
