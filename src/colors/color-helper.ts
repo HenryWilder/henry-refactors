@@ -3,7 +3,7 @@
 //
 
 /**
- * A 3-component color value representing an 18-bit color.
+ * A 3-component color value representing a 24-bit color.
  * @property `r` - [0..255] red component
  * @property `g` - [0..255] green component
  * @property `b` - [0..255] blue component
