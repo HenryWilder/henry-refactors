@@ -54,8 +54,8 @@ export const assertRGB01 = (c: ColorRGB01): void | never => {
  */
 export interface ColorHSL {
     /** [0..360] */ h: number,
-    /** [0..1] */ s: number,
-    /** [0..1] */ l: number,
+    /** [0..100] */ s: number,
+    /** [0..100] */ l: number,
 }
 
 export type HexColorComponent = `${number | string}${number | string | ''}`;
@@ -119,7 +119,7 @@ export namespace ColorConvert {
         };
     }
     export namespace hsl {
-        // Todo - if need arises
+        // todo, if need arises.
     }
     export namespace hex6 {
         /** {@link ColorHex6} => {@link ColorRGB255} */
@@ -147,31 +147,52 @@ export namespace ColorConvert {
 //
 
 /** Returns the perceived brightness of a color. */
-export const getBrightness = (color: ColorRGB01): number => (color.r * 0.299 + color.g * 0.587 + color.b * 0.114);
+export const getBrightness = (color: ColorRGB01): number => {
+    assertRGB01(color);
+    return (color.r * 0.299 + color.g * 0.587 + color.b * 0.114);
+};
 
 /** Finds whether black or white will contrast better with the given color. */
-export const colorContrast = (color: ColorRGB01): string => getBrightness(color) < 0.55 ? "white" : "black";
+export const colorContrast = (color: ColorRGB01): string => {
+    assertRGB01(color);
+    return getBrightness(color) < 0.55 ? "white" : "black";
+};
 
 /**
  * Finds where on the color wheel the given color falls under.
  * @example```
-    * colorCategory("#FF0000") // Returns "red"
-    * colorCategory("#0000AA") // Returns "blue"
-    * colorCategory("#FFFF00") // Returns "yellow"
-    * colorCategory("#000000") // Returns "black"
-    * colorCategory("#C0C0C0") // Returns "gray"
-    * ```
- * @throws Same as {@linkcode breakColor}
+ * "#FF0000" // "red"
+ * "#0000AA" // "blue"
+ * "#FFFF00" // "yellow"
+ * "#000000" // "black"
+ * "#C0C0C0" // "gray"
+ * ```
  */
-export const colorCategory = (hexColor: string): string => {
-    const color: ColorRGB255 = ColorConvert.hex6.toRGB255(hexColor);
-    const brightness: number = getBrightness(color);
-    const normalized: ColorRGB255 = {
-        r: (color.r / 256.0) / brightness,
-        g: (color.g / 256.0) / brightness,
-        b: (color.b / 256.0) / brightness
-    };
-    console.log(normalized);
-    const result = "magenta";
-    return result;
+export const colorCategory = (color: ColorHSL): string => {
+    console.log(color);
+    const hueNames: string[] = [
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "green",
+        "green",
+        "cyan",
+        "azure",
+        "blue",
+        "violet",
+        "magenta",
+        "rose",
+    ];
+    if (color.l < 25) {
+        return "black";
+    } else if (color.l > 95) {
+        return "white";
+    } else if (color.s < 30) {
+        return "gray";
+    } else if (color.l > 75 && (color.h <= 30 || color.h >= 290)) {
+        return "pink";
+    } else {
+        return hueNames[Math.floor(color.h / 30)];
+    }
 };

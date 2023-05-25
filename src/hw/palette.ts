@@ -94,10 +94,13 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     </script>
 </body>
 </html>`;
+
+        // Handle click events
         webviewView.webview.onDidReceiveMessage(
             (msg) => {
                 switch (msg.command) {
                     case 'get-data':
+                        console.log(`%c${msg.body}%c is ${hwColor.colorCategory(hwColor.ColorConvert.hex6.toHSL(msg.body))}`, `color:${msg.body}`, "color:unset");
                         vscode.env.clipboard.writeText(msg.body);
                         vscode.window.showInformationMessage(`"${msg.body}" has been copied`);
                         break;
