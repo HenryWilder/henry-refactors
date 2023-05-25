@@ -8,7 +8,7 @@ Some neat little additions I just wanted to add for my own use. You can use them
 
 An alignment command that aligns selected text by all special characters.
 
-![Web Palette](images/henry-align-example.png)
+![Henry Align example](images/henry-align-example.png)
 
 **Note:** Only works correctly with *multiple* selection. Lines will be concatenated if you select the full text all in one selection.
 
@@ -16,17 +16,17 @@ An alignment command that aligns selected text by all special characters.
 
 Preview selected CSS - uses Emmet to expand CSS selectors into HTML so you can preview your styles before creating the page.
 
-![Web Palette](images/css-preview-example1.png)
+![CSS Preview 1](images/css-preview-example1.png)
 
 Emmet expansions can also work on commented text if you highlight specifically the insides of the comment
 
-![Web Palette](images/css-preview-example2.png)
+![CSS Preview example 2](images/css-preview-example2.png)
 
 ### Web Palette
 
 A helpful panel for seeing many named colors that copy when clicked.
 
-![Web Palette](images/web-palette-example.png)
+![Web Palette example](images/web-palette-example.png)
 
 ## Known Issues
 

@@ -43,3 +43,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Web Palette swatch hover-outline accessibility (visibility was dependent on theme)
+- Readme images being incorrectly named
+- Readme containing template text

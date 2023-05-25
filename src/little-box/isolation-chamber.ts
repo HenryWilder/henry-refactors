@@ -9,5 +9,6 @@ export const runUserCodeInIsolation = (userCode: string, logMethod: (message: an
         (userCode
             .replace(/console\.log/g, isolatedLog.name) // Hopefully this should replace instances of "console.log()" with my own function
             .replace(/\b(?:eval)\b/g, '')); // Any cases of literal eval get removed.
-    Function(sanitizedCode)();
+    console.log("Sanitized code:", sanitizedCode);
+    Function('isolatedLog', sanitizedCode)(isolatedLog);
 };
