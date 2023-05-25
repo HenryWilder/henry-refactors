@@ -79,8 +79,8 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
         <button id="henryrefactors-languagecheck-isolated-code-execution-button" role="button">
             <span>Run</span>
         </button>
+        <!-- <textarea id="henryrefactors-languagecheck-isolated-code-execution-input" placeholder="Put any inputs to your program here"></textarea> -->
         <textarea id="henryrefactors-languagecheck-isolated-code-execution-code" placeholder="Start typing some code to test"></textarea>
-        <textarea id="henryrefactors-languagecheck-isolated-code-execution-input" placeholder="Put any inputs to your program here"></textarea>
         <b>Output</b>
         <div id="henryrefactors-languagecheck-isolated-code-execution-output"></div>
     </div>
@@ -90,21 +90,18 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
             console.log(vscode);
             const executeButton = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-button');
             const codeField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-code');
-            const inputField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-input');
             const outputField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-output');
             executeButton.addEventListener('click', () => {
                 vscode.postMessage({
                     command: 'run-prototype',
                     body: codeField.value,
-                    input: inputField.value,
                 });
             });
             window.addEventListener('message', (event) => {
                 const msg = event.data;
-                console.log(msg);
                 switch (msg.command) {
                     case 'push-output':
-                        outputField.value = msg.body;
+                        outputField.innerText += msg.body;
                         break;
                 }
             });
@@ -117,11 +114,11 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
 
         // Handle click events
         webviewView.webview.onDidReceiveMessage(
-            (msg: { command: string, body: string, input: string }) => {
+            (msg: { command: string, body: string }) => {
                 switch (msg.command) {
                     case 'run-prototype':
                         vscode.window.showInformationMessage('Executing your code...');
-                        runUserInput(msg.body, msg.input, webviewView.webview);
+                        runUserInput(msg.body, webviewView.webview);
                         break;
                 }
             }
@@ -129,18 +126,18 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
     }
 }
 
-const runUserInput = (userCode: string, input: string, outputMsgSendTo: vscode.Webview) => {
-    const oldLog = console.log;
+const runUserInput = (userCode: string, webview: vscode.Webview) => {
     try {
-        function henryRefactorsLog(message?: any, ...optionalParams: any[]) {
-            outputMsgSendTo.postMessage({
-                command: 'push-output',
-                body: [message, ...(optionalParams.map((e: any) => e.toString()))].join(' ')
-            });
-            oldLog.apply(console, [message, ...optionalParams]);
-        };
-        console.log = henryRefactorsLog;
-        Function(userCode)();
+        // I will greatly appriciate any advice/suggestions on anything else that needs to be escaped to ensure safety & stability.
+        Function(`((webview) => {
+            const henryRefactorsLog = (message, ...optionalParams) => {
+                webview.postMessage({
+                    command: 'push-output',
+                    body: [message, ...(optionalParams.map((e: any) => e.toString()))].join(' '),
+                });
+            };
+            ${userCode.replace(/console\.log/g, 'henryRefactorsLog').replace(/\b(?:webview|acquireVsCodeApi|token|TOKEN|eval)\b/g, '')}
+        })`)(webview);
     } catch (err) {
         console.error(err);
 
@@ -151,7 +148,5 @@ const runUserInput = (userCode: string, input: string, outputMsgSendTo: vscode.W
         } else {
             vscode.window.showErrorMessage(`Unexpected error type '${typeof err}' - ${err}`);
         }
-    } finally {
-        console.log = oldLog;
     }
 };
