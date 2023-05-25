@@ -32,3 +32,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Version number in package.json (finally)
+
+## [0.0.4] - 2023-05-25
+
+### Added
+
+- Web Palette color categorization
+- Language Check - a language-feature test tool for checking if features work how you expect on the fly
+
+### Fixed
+
+- Web Palette swatch hover-outline accessibility (visibility was dependent on theme)
