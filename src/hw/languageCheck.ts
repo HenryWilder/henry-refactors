@@ -133,7 +133,7 @@ const runUserInput = (userCode: string, webview: vscode.Webview) => {
             const henryRefactorsLog = (message, ...optionalParams) => {
                 webview.postMessage({
                     command: 'push-output',
-                    body: [message, ...(optionalParams.map((e: any) => e.toString()))].join(' '),
+                    body: [message, ...(optionalParams.map((e) => e.toString()))].join(' '),
                 });
             };
             ${userCode.replace(/console\.log/g, 'henryRefactorsLog').replace(/\b(?:webview|acquireVsCodeApi|token|TOKEN|eval)\b/g, '')}
