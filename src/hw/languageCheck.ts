@@ -79,15 +79,17 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
         <button id="henryrefactors-languagecheck-isolated-code-execution-button" role="button">
             <span>Run</span>
         </button>
-        <textarea id="henryrefactors-languagecheck-isolated-code-execution-field" placeholder="Start typing some code to test"></textarea>
+        <textarea id="henryrefactors-languagecheck-isolated-code-execution-code" placeholder="Start typing some code to test"></textarea>
+        <textarea id="henryrefactors-languagecheck-isolated-code-execution-input" placeholder="Put any inputs to your program here"></textarea>
+        <b>Output</b>
         <div id="henryrefactors-languagecheck-isolated-code-execution-output"></div>
     </div>
     <script>
         const vscode = acquireVsCodeApi();
         const executeButton = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-button');
-        const field = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-field');
+        const codeField = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-codeField');
         executeButton.addEventListener('click', () => {
-            vscode.postMessage({ command: 'run-prototype', body: field.value });
+            vscode.postMessage({ command: 'run-prototype', body: codeField.value, input: , output:  });
         });
     </script>
 </body>
@@ -98,10 +100,8 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
             (msg) => {
                 switch (msg.command) {
                     case 'run-prototype':
-                        vscode.window.showInformationMessage('Executing the code...');
-                        console.log('Executing the code:', msg.body);
-                        utils.hwCmd(() => Function(msg.body)());
-                        console.log('Execution complete.');
+                        vscode.window.showInformationMessage('Executing your code...');
+                        runUserInput(msg.body);
                         break;
                 }
             }
@@ -109,3 +109,26 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
     }
 }
 
+const runUserInput = (userCode: string) => {
+    const oldLog = console.log;
+    try {
+        function henryRefactorsLog(message?: any, ...optionalParams: any[]) {
+            // DO MESSAGE HERE.
+            oldLog.apply(console, [message, ...optionalParams]);
+        };
+        console.log = henryRefactorsLog;
+        Function(userCode)();
+    } catch (err) {
+        console.error(err);
+
+        if (typeof err === 'string') {
+            vscode.window.showErrorMessage(err);
+        } else if (err instanceof Error) {
+            vscode.window.showErrorMessage(`${err.name}: ${err.message} ${err?.stack}`);
+        } else {
+            vscode.window.showErrorMessage(`Unexpected error type '${typeof err}' - ${err}`);
+        }
+    } finally {
+        console.log = oldLog;
+    }
+};
