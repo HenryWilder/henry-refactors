@@ -25,17 +25,61 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
 <html>
 <head>
     <style>
+        #languagecheck-container {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 5px;
+        }
+        #languagecheck-container > button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            line-height: 18px;
+            font-family: var(--vscode-button-font-family);
+            font-weight: var(--vscode-button-font-weight);
+            font-size: var(--vscode-button-font-size);
+            color: var(--vscode-button-foreground);
+            background-color: var(--vscode-button-background);
+            text-align: center;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            padding: 4px;
+            margin-inline: auto;
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+        }
+        #languagecheck-container > button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+        #languagecheck-container > textarea {
+            font-family: var(--vscode-editor-font-family), monospace;
+            font-weight: var(--vscode-editor-font-weight);
+            font-size: var(--vscode-editor-font-size);
+            color: var(--vscode-editor-foreground);
+            background-color: var(--vscode-editor-background);
+            width: 100%;
+            flex-grow: 1;
+            resize: none;
+        }
     </style>
 </head>
 <body>
-    <textarea id="henryrefactors-languagecheck-isolated-code-execution-field" placeholder="Start typing some code to test"></textarea>
-    <button id="henryrefactors-languagecheck-isolated-code-execution-button">Run</button>
+    <div id="languagecheck-container">
+        <button id="henryrefactors-languagecheck-isolated-code-execution-button" role="button">
+            <span>Run</span>
+        </button>
+        <textarea id="henryrefactors-languagecheck-isolated-code-execution-field" placeholder="Start typing some code to test"></textarea>
+    </div>
     <script>
         const vscode = acquireVsCodeApi();
-        const field = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-field');
         const executeButton = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-button');
+        const field = document.getElementById('henryrefactors-languagecheck-isolated-code-execution-field');
         executeButton.addEventListener('click', () => {
-            vscode.postMessage({ command: 'run-prototype', body: field.innerText });
+            vscode.postMessage({ command: 'run-prototype', body: field.value });
         });
     </script>
 </body>
