@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as utils from './utils';
+import { runUserCodeInIsolation } from '../little-box/isolation-chamber';
 
 /**
  * A tool which allows users to quickly test small features of a language without creating a separate project.
@@ -99,6 +100,7 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
             });
             window.addEventListener('message', (event) => {
                 const msg = event.data;
+                console.log(msg);
                 switch (msg.command) {
                     case 'push-output':
                         outputField.innerText += msg.body;
@@ -128,16 +130,15 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
 
 const runUserInput = (userCode: string, webview: vscode.Webview) => {
     try {
-        // I will greatly appriciate any advice/suggestions on anything else that needs to be escaped to ensure safety & stability.
-        Function(`((webview) => {
-            const henryRefactorsLog = (message, ...optionalParams) => {
-                webview.postMessage({
-                    command: 'push-output',
-                    body: [message, ...(optionalParams.map((e) => e.toString()))].join(' '),
-                });
-            };
-            ${userCode.replace(/console\.log/g, 'henryRefactorsLog').replace(/\b(?:webview|acquireVsCodeApi|token|TOKEN|eval)\b/g, '')}
-        })`)(webview);
+        console.log("Executing", userCode);
+        const logMethod = (message: any, ...optionalParams: any[]): void => {
+            const msgBody: string = [message.toString(), ...(optionalParams.map((e) => e.toString()))].join(' ');
+            webview.postMessage({
+                command: 'push-output',
+                body: msgBody,
+            });
+        };
+        runUserCodeInIsolation(userCode, logMethod);
     } catch (err) {
         console.error(err);
 
