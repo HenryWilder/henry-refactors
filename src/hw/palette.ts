@@ -1,30 +1,10 @@
 import * as vscode from 'vscode';
+import * as hwColor from '../colors/color-helper';
 
 export interface NamedColor {
     name: string;
     value: string;
 }
-
-export const getBrightness = (r: number, g: number, b: number): number => {
-    return (r * 0.299 + g * 0.587 + b * 0.114) / 256.0;
-};
-
-const colorContrast = (hexColor: string): string => {
-    const rx: RegExp = /#([0-9A-Z]{2})([0-9A-Z]{2})([0-9A-Z]{2})/i;
-    const sections: RegExpExecArray | null = rx.exec(hexColor);
-    if (sections) {
-        const [r, g, b]: [number, number, number] = [
-            Number('0x'+sections[1]),
-            Number('0x'+sections[2]),
-            Number('0x'+sections[3]),
-        ];
-        const brightness = getBrightness(r, g, b);
-        const result = brightness < 0.55 ? "white" : "black";
-        return result;
-    } else {
-        return "magenta";
-    }
-};
 
 export class PaletteProvider implements vscode.WebviewViewProvider {
     constructor(
@@ -43,7 +23,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         const list = this.colorList.map((e: NamedColor) => {
             return `
 <div class="palette-item-container" title="${e.name} | ${e.value}">
-    <div class="palette-item" style="--palette-item-color:${e.value}; color:${colorContrast(e.value)}">
+    <div class="palette-item" style="--palette-item-color:${e.value}; color:${hwColor.colorContrast(hwColor.ColorConvert.hex6.toRGB01(e.value))}">
         <b>${e.name}</b><br/>
         <c>${e.value}</c>
     </div>
