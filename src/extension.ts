@@ -5,6 +5,7 @@ import { PaletteProvider } from './hw/palette';
 import namedColors from './colors/named-colors';
 import commonColors from './colors/common-colors';
 import favoriteColors from './colors/favorite-colors';
+import { LanguageCheckProvider } from './hw/languageCheck';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Henry Refactors is now active');
@@ -20,5 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 vscode.window.registerWebviewViewProvider('named-colors', new PaletteProvider("Named Colors", namedColors));
 vscode.window.registerWebviewViewProvider('common', new PaletteProvider("Common Colors", commonColors));
 vscode.window.registerWebviewViewProvider('favorites', new PaletteProvider("Favorites", favoriteColors));
+
+vscode.window.registerWebviewViewProvider('language-check-console', new LanguageCheckProvider());
 
 export function deactivate() { }

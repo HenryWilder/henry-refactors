@@ -23,6 +23,11 @@
           "id": "web-palette",
           "title": "Web Palette",
           "icon": "resources/web-palette.svg"
+        },
+        {
+          "id": "language-check",
+          "title": "Language Check",
+          "icon": "resources/language-check.svg"
         }
       ]
     },
@@ -42,6 +47,13 @@
           "type": "webview",
           "id": "favorites",
           "name": "Favorites"
+        }
+      ],
+      "language-check": [
+        {
+          "type": "webview",
+          "id": "language-check-console",
+          "name": "Console"
         }
       ]
     },
