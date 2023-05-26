@@ -45,11 +45,12 @@ I wanted to implement at least something basic for comments, but unfortunately I
 
 ## Known Issues
 
-- Henry Align adds trailing whitespace
-- Henry Align doesn't necessarily align matching text sections
-- Running CSS Preview while not having text selected can cause errors
-- CSS Preview command must be re-executed to refresh, which creates a new webview instance every time
+- Henry Align adds trailing whitespace.
+- Henry Align doesn't necessarily align matching text sections.
+- Running CSS Preview while not having text selected can cause errors.
+- CSS Preview command must be re-executed to refresh, which creates a new webview instance every time.
 - CSS Preview is not very flexible and can error easily in many situations. This includes the use of `:has()`, `:hover`, `::after`, and other things that cannot actually be expanded by Emmet.
+- Web Palette doesn't copy color to clipboard when clicking labels - expected behavior is to copy the color name instead of hex code.
 
 ## Release Notes
 

@@ -71,12 +71,19 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
          * I gave that many elements in VS Code rounded corners... I'll test that out later.
          */
 
+        /* 
+         * Alright, I've tested it. Turns out there's no issue with performance at all, using border radius.
+         * I guess I must've had the DOM inspector open at the time. I know that certainly reduces performance quite a bit, at least in VS Code.
+         */
+
         const labelPositionConfig: string = vscode.workspace.getConfiguration('henryRefactors.webPalette.appearance').get('labelPosition') ?? "right";
         const swatchConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('henryRefactors.webPalette.appearance.swatches');
 
         const swatchShapeConfig: string = swatchConfig.get('shape') ?? "static";
         const swatchStaticRatioConfig: number = swatchConfig.get('staticRatio') ?? 2;
         const swatchHeightConfig: number = swatchConfig.get('height') ?? 1;
+        const swatchBorderRadiusConfig: number = swatchConfig.get('borderRadius') ?? 0;
+        const swatchPaddingConfig: number = swatchConfig.get('labelPadding') ?? 10;
         
         const swatchShapeStyles: { [key: string]: string } = {
             'static': `width: ${swatchStaticRatioConfig * swatchHeightConfig}in;`,
@@ -107,7 +114,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         }
         .palette-item {
             background-color: var(--palette-item-color);
-            padding: 10px;
+            padding: ${swatchPaddingConfig}px;
             ${swatchShapeStyle}
             height: ${swatchHeightConfig}in;
             overflow: hidden;
@@ -115,6 +122,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             box-sizing: content;
             text-align: ${labelPositionConfig};
             font-size: var(--vscode-font-size);
+            ${swatchBorderRadiusConfig > 0 ? `border-radius: ${swatchBorderRadiusConfig}px;` : ''}
         }
         .palette-item-container:hover .palette-item {
             outline: 2px dashed var(--vscode-editor-foreground);

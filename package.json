@@ -130,6 +130,21 @@
           "scope": "resource",
           "order": 2
         },
+        "henryRefactors.webPalette.appearance.swatches.borderRadius": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9999,
+          "default": 0,
+          "description": "Radius of swatch corners (pixels)",
+          "scope": "resource"
+        },
+        "henryRefactors.webPalette.appearance.swatches.labelPadding": {
+          "type": "number",
+          "minimum": 0,
+          "default": 10,
+          "description": "Swatch label inset from edge (pixels)",
+          "scope": "resource"
+        },
         "henryRefactors.webPalette.appearance.labelPosition": {
           "type": "string",
           "enum": ["left","center","right"],
