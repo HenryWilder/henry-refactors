@@ -67,6 +67,7 @@ const style: string = `
     width: 100%;
     box-sizing: border-box;
     background-color: transparent;
+    padding: 0.125rem 0.5ch;
 }
 .henryrefactors-msg-info:hover,
 .henryrefactors-msg-warn:hover,
@@ -161,11 +162,10 @@ export default `<!DOCTYPE html>
 </head>
 <body>
     <div id="languagecheck-container">
+        <textarea id="henryrefactors-languagecheck-isolated-code-execution-code" placeholder="Start typing some code to test"></textarea>
         <button id="henryrefactors-languagecheck-isolated-code-execution-button" role="button">
             <span>Run</span>
         </button>
-        <!-- <textarea id="henryrefactors-languagecheck-isolated-code-execution-input" placeholder="Put any inputs to your program here"></textarea> -->
-        <textarea id="henryrefactors-languagecheck-isolated-code-execution-code" placeholder="Start typing some code to test"></textarea>
         <h2 class="section-label">Output</h2>
         <div id="henryrefactors-languagecheck-isolated-code-execution-output"></div>
     </div>

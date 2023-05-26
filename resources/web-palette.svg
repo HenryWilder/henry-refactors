@@ -1,5 +1,12 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="24px" height="24px" version="1.1" xmlns="http://www.w3.org/2000/svg">
     <desc>Web Palette icon</desc>
-    <rect x="0px" y="0px" width="24px" height="24px" fill="black" />
+    <path d="M0 0 h24 v24 h-24z
+        M3 4 v4 h8 v-4z
+        M3 10 v4 h8 v-4z
+        M3 16 v4 h8 v-4z
+        M13 4 v4 h8 v-4z
+        M13 10 v4 h8 v-4z
+        M13 16 v4 h8 v-4z
+        " fill="black" />
 </svg>

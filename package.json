@@ -2,7 +2,7 @@
   "name": "henryrefactors",
   "displayName": "Henry Refactors",
   "description": "Custom refactors created by Henry",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "repository": "https://github.com/HenryWilder/henry-refactors",
   "publisher": "HenryWilder",
   "galleryBanner": {

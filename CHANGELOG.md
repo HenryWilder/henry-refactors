@@ -33,15 +33,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Version number in package.json (finally)
 
-## [0.0.4] - 2023-05-25
+## [0.1.0] - 2023-05-25
 
 ### Added
 
 - Web Palette color categorization
 - Language Check - a language-feature test tool for checking if features work how you expect on the fly
+- Basic console tools for Language Check
 
 ### Fixed
 
 - Web Palette swatch hover-outline accessibility (visibility was dependent on theme)
 - Readme images being incorrectly named
 - Readme containing template text
+
+### Changed
+
+- Web palette icon
+- Language Check icon

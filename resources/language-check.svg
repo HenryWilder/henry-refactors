@@ -1,5 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="24px" height="24px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <desc>Web Palette icon</desc>
-    <rect x="0px" y="0px" width="24px" height="24px" fill="black" />
+    <desc>Language Check icon</desc>
+    <path d="M0 0 h24 v24 h-24z
+        M3 8 v9 h17 v-9z
+        M5 10 h3 v2 h-3z
+        M10 10 h7 v2 h-7z
+        M8 13 h5 v2 h-5z
+        M15 13 h2 v2 h-2z
+        " fill="black" />
 </svg>
