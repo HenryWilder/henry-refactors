@@ -76,9 +76,39 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             font-family: var(--vscode-editor-font-family);
             font-weight: var(--vscode-editor-font-weight);
         }
+        #categories {
+            padding: 5px;
+            gap: 0;
+            display: flex;
+            flex-flow: row;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .category-bubble {
+            height: 0.15in;
+            flex-grow: 1;
+            cursor: pointer;
+            /* box-shadow: 0 3px 10px 1px var(--vscode-widget-shadow), 0 3px 3px 0px var(--vscode-widget-shadow); */
+            transition: 100ms linear;
+        }
+        .category-bubble:hover, #categories:not(:has(> .category-bubble:hover)) > .category-bubble:first-child {
+            flex-grow: 2;
+        }
+        #categories > .category-bubble:first-child {
+            border-top-left-radius: 9999px;
+            border-bottom-left-radius: 9999px;
+        }
+        #categories > .category-bubble:last-child {
+            border-top-right-radius: 9999px;
+            border-bottom-right-radius: 9999px;
+        }
     </style>
 </head>
 <body>
+    <div id="categories">
+        ${['black', 'red', 'orange', 'yellow', 'green', 'cyan', 'dodgerblue', 'blue', 'violet', 'magenta', 'white']
+                .map(cat => `<div class="category-bubble" style="background-color: ${cat};"></div>`).join('\n')}
+    </div>
     <div id="palette">
         ${list.join('\n')}
     </div>
