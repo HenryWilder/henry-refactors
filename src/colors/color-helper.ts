@@ -169,7 +169,6 @@ export const colorContrast = (color: ColorRGB01): string => {
  * ```
  */
 export const colorCategory = (color: ColorHSL): string => {
-    console.log(color);
     const hueNames: string[] = [
         "red",
         "orange",

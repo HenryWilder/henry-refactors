@@ -21,8 +21,8 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         webviewView.webview.options = { enableScripts: true };
 
         const categories = [
-            { name: ' all', display: 'linear-gradient(to right, red, orange, yellow, green, cyan, dodgerblue, blue, violet, magenta, hotPink, pink)' },
-            { name: ' gray', display: 'linear-gradient(to right, black, gray, white)' },
+            { name: "all", display: "linear-gradient(to right, red, orange, yellow, green, cyan, dodgerblue, blue, violet, magenta, hotPink, pink)" },
+            { name: "gray", display: "linear-gradient(to right, black, gray, white)" },
             { name: "red", display: "red" },
             { name: "orange", display: "orange" },
             { name: "yellow", display: "yellow" },
@@ -39,9 +39,11 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             .map(cat => `<div class="category-bubble" title="Show ${cat.name}" style="background: ${cat.display};"></div>`);
 
         const list = this.colorList.map((e: NamedColor) => {
+            const contrastingColor = hwColor.colorContrast(hwColor.ColorConvert.hex6.toRGB01(e.value));
+            const categoryOfColor = hwColor.colorCategory(hwColor.ColorConvert.hex6.toHSL(e.value));
             return `
-<div class="palette-item-container" title="${e.name} | ${e.value}">
-    <div class="palette-item" style="--palette-item-color:${e.value}; color:${hwColor.colorContrast(hwColor.ColorConvert.hex6.toRGB01(e.value))}">
+<div class="palette-item-container color-category-${categoryOfColor}" title="${e.name} | ${e.value}">
+    <div class="palette-item" style="--palette-item-color:${e.value}; color:${contrastingColor}">
         <b>${e.name}</b><br/>
         <c>${e.value}</c>
     </div>
@@ -121,6 +123,9 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             flex-grow: 2;
             z-index: 1;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -138,12 +143,22 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
 
         document.querySelectorAll('.category-bubble').forEach((el) => {
             el.addEventListener('click', () => {
-                if (activeCategoryFilter) {
-                    activeCategoryFilter.classList.remove('in-use');
+                try {
+                    if (activeCategoryFilter) {
+                        activeCategoryFilter.classList.remove('in-use');
+                    }
+                    activeCategoryFilter = el;
+                    el.classList.add('in-use');
+                    const filterCategory = el.title.substring('Show '.length);
+                    const nonMatching = document.querySelectorAll(\`.palette-item-container:not(.color-category-\${filterCategory})\`);
+                    const matching = document.querySelectorAll(\`.palette-item-container.color-category-\${filterCategory}\`);
+                    console.log('nonMatching', nonMatching);
+                    console.log('matching', matching);
+                    nonMatching.forEach((e) => { e.classList.add('hidden'); });
+                    matching.forEach((e) => { e.classList.remove('hidden'); });
+                } catch (err) {
+                    console.error(err);
                 }
-                activeCategoryFilter = el;
-                el.classList.add('in-use');
-                // vscode.postMessage({ command: 'get-data', body: el.title.substring('Show '.length) });
             });
         });
 
