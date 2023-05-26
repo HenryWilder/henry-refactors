@@ -82,7 +82,7 @@
     "configuration": {
       "title": "Henry Refactors",
       "properties": {
-        "henryrefactors.web-palette.favorites": {
+        "henryRefactors.webPalette.favorites": {
           "type": "array",
           "items": {
             "type": "object",
@@ -102,6 +102,37 @@
           "default": [],
           "uniqueItems": true,
           "description": "Colors displayed in the \"favorites\" view",
+          "scope": "resource"
+        },
+        "henryRefactors.webPalette.appearance.swatches.Shape": {
+          "type": "string",
+          "enum": ["static", "fit", "stretch"],
+          "enumDescriptions": ["Uniform for all swatches", "Fit to label size", "Stretch to fill available space"],
+          "default": "static",
+          "description": "Ratio of color swatches",
+          "scope": "resource",
+          "order": 0
+        },
+        "henryRefactors.webPalette.appearance.swatches.staticRatio": {
+          "type": "number",
+          "default": 2,
+          "examples": [1, 1.618, 2, 2.5],
+          "description": "Width ratio of color swatches (if static)",
+          "scope": "resource",
+          "order": 1
+        },
+        "henryRefactors.webPalette.appearance.swatches.height": {
+          "type": "number",
+          "default": 1,
+          "description": "Height of swatches (inches)",
+          "scope": "resource",
+          "order": 2
+        },
+        "henryRefactors.webPalette.appearance.labelPosition": {
+          "type": "string",
+          "enum": ["left","center","right"],
+          "default": "right",
+          "description": "Position of swatch labels",
           "scope": "resource"
         }
       }
