@@ -150,12 +150,15 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
                     activeCategoryFilter = el;
                     el.classList.add('in-use');
                     const filterCategory = el.title.substring('Show '.length);
-                    const nonMatching = document.querySelectorAll(\`.palette-item-container:not(.color-category-\${filterCategory})\`);
-                    const matching = document.querySelectorAll(\`.palette-item-container.color-category-\${filterCategory}\`);
-                    console.log('nonMatching', nonMatching);
-                    console.log('matching', matching);
-                    nonMatching.forEach((e) => { e.classList.add('hidden'); });
-                    matching.forEach((e) => { e.classList.remove('hidden'); });
+                    if (filterCategory === 'all') {
+                        const all = document.querySelectorAll('.palette-item-container');
+                        all.forEach((e) => { e.classList.remove('hidden'); });
+                    } else {
+                        const nonMatching = document.querySelectorAll(\`.palette-item-container:not(.color-category-\${filterCategory})\`);
+                        const matching = document.querySelectorAll(\`.palette-item-container.color-category-\${filterCategory}\`);
+                        nonMatching.forEach((e) => { e.classList.add('hidden'); });
+                        matching.forEach((e) => { e.classList.remove('hidden'); });
+                    }
                 } catch (err) {
                     console.error(err);
                 }
