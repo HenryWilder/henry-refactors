@@ -25,7 +25,7 @@ export const runUserCodeInIsolation = (userCode: string, logMethod: LoggerMethod
                 baseWarn(`Timer '${label}' does not exist`);
                 return;
             }
-            baseLog(`${label}: ${consoleTimers[label]} ms`);
+            baseLog(`${label}: ${consoleTimers[label]} ms`, ...data);
         };
 
         // This is intended to shadow the console, causing the user's code to call these functions instead.
@@ -69,7 +69,9 @@ export const runUserCodeInIsolation = (userCode: string, logMethod: LoggerMethod
                 consoleGroupStack.pop();
             },
             info: baseLog,
-            table: (tabularData: any, properties?: ReadonlyArray<string>): void => {},
+            table: (tabularData: any, properties?: ReadonlyArray<string>): void => {
+                throw Error('console.table is not yet implemented'); // Todo
+            },
             time: (label: string = 'default'): void => {
                 consoleTimers[label] = Date.now();
             },
