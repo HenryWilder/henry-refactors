@@ -38,10 +38,11 @@ const style: string = `
     border: 1px solid var(--vscode-input-border, transparent);
     width: 100%;
     resize: vertical;
-    padding: 3px;
+    padding: 4px;
     box-sizing: border-box;
     border-radius: 2px;
     min-height: 3rem;
+    height: 15.5rem;
 }
 #languagecheck-container > textarea:focus {
     outline: none;
@@ -83,10 +84,10 @@ const style: string = `
     font-weight: normal;
 }
 .group {
-
+    /* todo */
 }
 .group-label {
-
+    /* todo */
 }
 `;
 
