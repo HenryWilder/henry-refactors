@@ -20,6 +20,24 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         webviewView.title = this.title;
         webviewView.webview.options = { enableScripts: true };
 
+        const categories = [
+            { name: ' all', display: 'linear-gradient(to right, red, orange, yellow, green, cyan, dodgerblue, blue, violet, magenta, hotPink, pink)' },
+            { name: ' gray', display: 'linear-gradient(to right, black, gray, white)' },
+            { name: "red", display: "red" },
+            { name: "orange", display: "orange" },
+            { name: "yellow", display: "yellow" },
+            { name: "green", display: "green" },
+            { name: "cyan", display: "cyan" },
+            { name: "azure", display: "dodgerblue" },
+            { name: "blue", display: "blue" },
+            { name: "violet", display: "violet" },
+            { name: "magenta", display: "magenta" },
+            { name: "rose", display: "hotPink" },
+            { name: "pink", display: "pink" },
+        ];
+        const categoryList = categories
+            .map(cat => `<div class="category-bubble" title="Show ${cat.name}" style="background: ${cat.display};"></div>`);
+
         const list = this.colorList.map((e: NamedColor) => {
             return `
 <div class="palette-item-container" title="${e.name} | ${e.value}">
@@ -78,36 +96,36 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         }
         #categories {
             padding: 5px;
-            gap: 0;
+            gap: 1ch;
             display: flex;
             flex-flow: row;
             justify-content: flex-start;
             align-items: center;
+            position: sticky;
+            top: 0;
+            background-color: var(--vscode-panel-background);
         }
         .category-bubble {
+            border-radius: 9999px;
             height: 0.15in;
             flex-grow: 1;
             cursor: pointer;
-            /* box-shadow: 0 3px 10px 1px var(--vscode-widget-shadow), 0 3px 3px 0px var(--vscode-widget-shadow); */
-            transition: 100ms linear;
+            z-index: 0;
+            transition: 75ms ease-in-out;
         }
-        .category-bubble:hover, #categories:not(:has(> .category-bubble:hover)) > .category-bubble:first-child {
+        .category-bubble:hover {
+            outline: 2px solid var(--vscode-editor-foreground);
+            z-index: 2;
+        }
+        .category-bubble.in-use {
             flex-grow: 2;
-        }
-        #categories > .category-bubble:first-child {
-            border-top-left-radius: 9999px;
-            border-bottom-left-radius: 9999px;
-        }
-        #categories > .category-bubble:last-child {
-            border-top-right-radius: 9999px;
-            border-bottom-right-radius: 9999px;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
     <div id="categories">
-        ${['black', 'red', 'orange', 'yellow', 'green', 'cyan', 'dodgerblue', 'blue', 'violet', 'magenta', 'white']
-                .map(cat => `<div class="category-bubble" style="background-color: ${cat};"></div>`).join('\n')}
+        ${categoryList.join('\n')}
     </div>
     <div id="palette">
         ${list.join('\n')}
@@ -115,6 +133,20 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     <script>
         console.log('Hello world');
         const vscode = acquireVsCodeApi();
+
+        let activeCategoryFilter = undefined;
+
+        document.querySelectorAll('.category-bubble').forEach((el) => {
+            el.addEventListener('click', () => {
+                if (activeCategoryFilter) {
+                    activeCategoryFilter.classList.remove('in-use');
+                }
+                activeCategoryFilter = el;
+                el.classList.add('in-use');
+                // vscode.postMessage({ command: 'get-data', body: el.title.substring('Show '.length) });
+            });
+        });
+
         document.querySelectorAll('.palette-item-container').forEach((el) => {
             el.addEventListener('click', (event) => {
                 let messageBody = '';
