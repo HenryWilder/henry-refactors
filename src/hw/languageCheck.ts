@@ -176,7 +176,8 @@ export class LanguageCheckProvider implements vscode.WebviewViewProvider {
 
 const runUserInput = (userCode: string, webview: vscode.Webview) => {
 
-    webview.postMessage({ command: 'clear-output' });
+    const clrMethod = (): void => { webview.postMessage({ command: 'clear-output' }); };
+    clrMethod();
 
     const logMethod = (message: any, ...optionalParams: any[]): void => {
         const msgBody: string = [message.toString(), ...(optionalParams.map((e) => e.toString()))].join(' ');
@@ -207,7 +208,7 @@ const runUserInput = (userCode: string, webview: vscode.Webview) => {
 
     try {
 
-        runUserCodeInIsolation(userCode, logMethod, warnMethod, errMethod);
+        runUserCodeInIsolation(userCode, logMethod, warnMethod, errMethod, clrMethod);
 
     } catch (err) {
 
