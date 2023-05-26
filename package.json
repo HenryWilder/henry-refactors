@@ -68,7 +68,32 @@
         "title": "CSS Preview",
         "category": "Henry Refactors"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "Object",
+      "title": "Favorite Colors",
+      "properties": {
+        "henryrefactors.web-palette.favorites": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "inner objects",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the color"
+              },
+              "hexcode": {
+                "type": "string",
+                "description": "Hex code of the color"
+              }
+            }
+          },
+          "default": [],
+          "description": "Colors displayed in the \"favorites\" view"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

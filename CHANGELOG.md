@@ -51,3 +51,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Web palette icon
 - Language Check icon
+
+## [0.1.1] - 2023-05-26
+
+### Added
+
+- Filter by color feature for Web Palette
+- "Favorites" feature for Web Palette (through settings)
+
+### Changed
+
+- Web Palette swatch shapes now responsive instead of 1x2 (might change back in the future)
