@@ -103,7 +103,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             padding: 5px;
             gap: 1ch;
             display: flex;
-            flex-flow: row;
+            flex-flow: row wrap;
             justify-content: flex-start;
             align-items: center;
             position: sticky;
@@ -113,18 +113,17 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         .category-bubble {
             border-radius: 9999px;
             height: 0.15in;
-            flex-grow: 1;
+            width: 0.3in;
             cursor: pointer;
             z-index: 0;
-            transition: 75ms ease-in-out;
         }
         .category-bubble:hover {
-            outline: 2px solid var(--vscode-editor-foreground);
+            outline: 2px solid var(--vscode-widget-shadow);
             z-index: 2;
         }
         .category-bubble.in-use {
-            flex-grow: 2;
             z-index: 1;
+            outline: 2px solid var(--vscode-editor-foreground);
         }
         .hidden {
             display: none;
@@ -144,28 +143,28 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
 
         let activeCategoryFilter = undefined;
 
-        document.querySelectorAll('.category-bubble').forEach((el) => {
+        const setColorFilter = (el) => {
             el.addEventListener('click', () => {
                 if (activeCategoryFilter) {
                     activeCategoryFilter.classList.remove('in-use');
                 }
                 activeCategoryFilter = el;
                 el.classList.add('in-use');
-                const filterCategory = el.title.substring('Show '.length);
+                const filterCategory = el;
                 if (filterCategory === 'all') {
                     const all = document.querySelectorAll('.palette-item-container');
                     all.forEach((e) => { e.classList.remove('hidden'); });
                 } else if (filterCategory === 'grayscale') {
-                    const nonMatching = document.querySelectorAll('.palette-item-container' + [
+                    const nonMatching = document.querySelectorAll('.palette-item-container' + ([
                         ':not(.color-category-black)',
                         ':not(.color-category-gray)',
                         ':not(.color-category-white)',
-                        ].join(''));
+                        ].join('')));
                     const matching = document.querySelectorAll([
                         '.palette-item-container.color-category-black',
                         '.palette-item-container.color-category-gray',
                         '.palette-item-container.color-category-white',
-                        ],join(','));
+                        ].join(','));
                     nonMatching.forEach((e) => { e.classList.add('hidden'); });
                     matching.forEach((e) => { e.classList.remove('hidden'); });
                 } else {
@@ -175,7 +174,10 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
                     matching.forEach((e) => { e.classList.remove('hidden'); });
                 }
             });
-        });
+        }
+
+        document.querySelectorAll('.category-bubble').forEach(setColorFilter);
+        setColorFilter(document.querySelector('.category-bubble.color-category-all'));
 
         document.querySelectorAll('.palette-item-container').forEach((el) => {
             el.addEventListener('click', (event) => {
