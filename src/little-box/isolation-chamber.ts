@@ -1,20 +1,24 @@
 type LoggerMethod = (message: any, ...optionalParams: any[]) => void;
 
 // I will greatly appriciate any advice/suggestions on anything else that needs to be escaped to ensure safety & stability.
-export const runUserCodeInIsolation = (userCode: string, logMethod: LoggerMethod, warnMethod: LoggerMethod, errMethod: LoggerMethod, clrMethod: () => void) => {
+export const runUserCodeInIsolation = (
+    userCode: string,
+    logMethod: LoggerMethod,
+    warnMethod: LoggerMethod,
+    errMethod: LoggerMethod,
+    clrMethod: () => void,
+    messageWebview: (msg: any) => void) => {
 
     const sanitizedCode =
         `function eval(x) { throw new Error("The use of 'eval' has been strictly forbidden."); }` + // This should hopefully shadow the eval function and make it inaccessible (hopefully?)
         // This line should protect against more complicated code (like "JSF***") that constructs the name "eval" and calls that string as a function.
         userCode;
-    
-    console.log("Sanitized code:", sanitizedCode);
 
     try {
         let consoleCounters: { [key: string]: number } = { 'default': 0 };
         let consoleTimers: { [key: string]: number } = { 'default': 0 };
         let consoleGroupStack: string[] = [];
-        const indentation = () => ' '.repeat(consoleGroupStack.length * 2);
+        const indentation = () => ' '.repeat(consoleGroupStack.length * 4);
         
         const baseLog = (message: any, ...optionalParams: any[]): void => logMethod(indentation() + message, ...optionalParams);
         const baseWarn = (message: any, ...optionalParams: any[]): void => warnMethod(indentation() + message, ...optionalParams);
@@ -59,14 +63,19 @@ export const runUserCodeInIsolation = (userCode: string, logMethod: LoggerMethod
                 throw new Error('console.dirxml is not yet implemented');
             },
             group: (...label: any[]): void => {
-                consoleGroupStack.push(label.join(' '));
-                logMethod(consoleGroupStack[consoleGroupStack.length - 1]);
+                const latestGroupName: string = label.join(' ');
+                consoleGroupStack.push(latestGroupName);
+                messageWebview({
+                    command: 'push-group',
+                    body: latestGroupName,
+                });
             },
             groupCollapsed: (...label: any[]): void => {
                 throw Error('console.groupCollapsed is not yet implemented');
             },
             groupEnd: (): void => {
                 consoleGroupStack.pop();
+                messageWebview({ command: 'close-group' });
             },
             info: baseLog,
             table: (tabularData: any, properties?: ReadonlyArray<string>): void => {
