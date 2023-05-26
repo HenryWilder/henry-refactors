@@ -37,7 +37,6 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         #palette {
             display: flex;
             flex-flow: row wrap;
-            align-items: stretch;
             gap: 0px;
             padding-block: 10px;
         }
@@ -45,11 +44,17 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             padding: 5px;
             cursor: pointer;
             box-sizing: border-box;
+            flex-grow: 1;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
         }
         .palette-item {
             background-color: var(--palette-item-color);
             padding: 10px;
-            width: 2in;
+            min-width: 1in;
+            /* max-width: 2in; */
+            width: 100%;
             height: 1in;
             overflow: hidden;
             text-overflow: ellipsis;
