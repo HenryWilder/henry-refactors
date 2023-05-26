@@ -2,17 +2,27 @@
   "name": "henryrefactors",
   "displayName": "Henry Refactors",
   "description": "Custom refactors created by Henry",
-  "version": "0.1.0",
   "repository": "https://github.com/HenryWilder/henry-refactors",
+  "author": {
+    "name": "Henry Wilder",
+    "url": "https://ocp-federation.net/about/authors/henry-wilder/"
+  },
+  "keywords": [
+    "qol"
+  ],
+  "version": "0.1.0",
   "publisher": "HenryWilder",
   "galleryBanner": {
-    "color": "#bf00ff"
+    "color": "#bf00ff",
+    "theme": "dark"
   },
   "engines": {
     "vscode": "^1.78.0"
   },
+  "qna": "marketplace",
   "categories": [
-    "Other"
+    "Other",
+    "Visualization"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
@@ -70,28 +80,29 @@
       }
     ],
     "configuration": {
-      "type": "Object",
       "title": "Henry Refactors",
       "properties": {
         "henryrefactors.web-palette.favorites": {
-          "title": "Favorite Colors",
           "type": "array",
           "items": {
             "type": "object",
-            "title": "inner objects",
             "properties": {
               "name": {
                 "type": "string",
                 "description": "Name of the color"
               },
-              "hexcode": {
+              "value": {
                 "type": "string",
-                "description": "Hex code of the color"
+                "pattern": "^#[0-9a-fA-F]{6}$",
+                "description": "Hexcode of the color"
               }
-            }
+            },
+            "additionalProperties": false
           },
           "default": [],
-          "description": "Colors displayed in the \"favorites\" view"
+          "uniqueItems": true,
+          "description": "Colors displayed in the \"favorites\" view",
+          "scope": "resource"
         }
       }
     }

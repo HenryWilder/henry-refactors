@@ -4,7 +4,7 @@ import { hwCommands } from './hw/index';
 import { PaletteProvider } from './hw/palette';
 import namedColors from './colors/named-colors';
 import commonColors from './colors/common-colors';
-import favoriteColors from './colors/favorite-colors';
+import favoriteColors, { addFavorite } from './colors/favorite-colors';
 import { LanguageCheckProvider } from './hw/languageCheck';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -20,7 +20,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 vscode.window.registerWebviewViewProvider('named-colors', new PaletteProvider("Named Colors", namedColors));
 vscode.window.registerWebviewViewProvider('common', new PaletteProvider("Common Colors", commonColors));
-vscode.window.registerWebviewViewProvider('favorites', new PaletteProvider("Favorites", favoriteColors));
+addFavorite({ name: "Red", value: "#FF0000" });
+vscode.window.registerWebviewViewProvider('favorites', new PaletteProvider("Favorites", favoriteColors()));
 
 vscode.window.registerWebviewViewProvider('language-check-console', new LanguageCheckProvider());
 
