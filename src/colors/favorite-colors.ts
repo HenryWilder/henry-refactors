@@ -1,18 +1,24 @@
 import * as vscode from 'vscode';
 import { NamedColor } from "../hw/palette";
 
-export default function () {
+function favoriteColors(): NamedColor[] {
     return vscode.workspace.getConfiguration('henryrefactors.web-palette').get('favorites') as NamedColor[];
 }
 
+export default favoriteColors;
+
 export const addFavorite = (color: NamedColor) => {
-    const currentFaves: NamedColor[] = vscode.workspace.getConfiguration('henryrefactors.web-palette').get('favorites') as NamedColor[];
+    const currentFaves: NamedColor[] = favoriteColors();
     vscode.workspace.getConfiguration('henryrefactors.web-palette')
-        .update('favorites', currentFaves.concat(color), vscode.ConfigurationTarget.Global);
+        .update('favorites', currentFaves.concat(color)
+            .filter((c: NamedColor, i: number, arr: NamedColor[]) => arr.indexOf(c) === i),
+            vscode.ConfigurationTarget.Global);
 };
 
 export const removeFavorite = (color: NamedColor) => {
-    const currentFaves: NamedColor[] = vscode.workspace.getConfiguration('henryrefactors.web-palette').get('favorites') as NamedColor[];
+    const currentFaves: NamedColor[] = favoriteColors();
     vscode.workspace.getConfiguration('henryrefactors.web-palette')
-        .update('favorites', currentFaves.filter((c: NamedColor) => c.name !== color.name), vscode.ConfigurationTarget.Global);
+        .update('favorites', currentFaves
+            .filter((c: NamedColor) => c !== color),
+            vscode.ConfigurationTarget.Global);
 };
