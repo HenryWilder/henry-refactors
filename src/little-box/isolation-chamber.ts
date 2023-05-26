@@ -29,7 +29,7 @@ export const runUserCodeInIsolation = (
                 baseWarn(`Timer '${label}' does not exist`);
                 return;
             }
-            baseLog(`${label}: ${consoleTimers[label]} ms`, ...data);
+            baseLog(`${label}: ${Date.now() - consoleTimers[label]} ms`, ...data);
         };
 
         // This is intended to shadow the console, causing the user's code to call these functions instead.
