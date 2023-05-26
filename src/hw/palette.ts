@@ -6,6 +6,25 @@ export interface NamedColor {
     value: string;
 }
 
+const categories = [
+    { name: "all", display: "linear-gradient(to right, red, orange, yellow, green, cyan, dodgerblue, blue, violet, magenta, hotPink, pink)" },
+    { name: "grayscale", display: "linear-gradient(to right, black, gray, white)" },
+    { name: "black", display: "black" },
+    { name: "gray", display: "gray" },
+    { name: "white", display: "white" },
+    { name: "red", display: "red" },
+    { name: "orange", display: "orange" },
+    { name: "yellow", display: "yellow" },
+    { name: "green", display: "green" },
+    { name: "cyan", display: "cyan" },
+    { name: "azure", display: "dodgerblue" },
+    { name: "blue", display: "blue" },
+    { name: "violet", display: "violet" },
+    { name: "magenta", display: "magenta" },
+    { name: "rose", display: "hotPink" },
+    { name: "pink", display: "pink" },
+];
+
 export class PaletteProvider implements vscode.WebviewViewProvider {
     constructor(
         private title: string,
@@ -20,24 +39,6 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         webviewView.title = this.title;
         webviewView.webview.options = { enableScripts: true };
 
-        const categories = [
-            { name: "all", display: "linear-gradient(to right, red, orange, yellow, green, cyan, dodgerblue, blue, violet, magenta, hotPink, pink)" },
-            { name: "grayscale", display: "linear-gradient(to right, black, gray, white)" },
-            { name: "black", display: "black" },
-            { name: "gray", display: "gray" },
-            { name: "white", display: "white" },
-            { name: "red", display: "red" },
-            { name: "orange", display: "orange" },
-            { name: "yellow", display: "yellow" },
-            { name: "green", display: "green" },
-            { name: "cyan", display: "cyan" },
-            { name: "azure", display: "dodgerblue" },
-            { name: "blue", display: "blue" },
-            { name: "violet", display: "violet" },
-            { name: "magenta", display: "magenta" },
-            { name: "rose", display: "hotPink" },
-            { name: "pink", display: "pink" },
-        ];
         const categoryList = categories
             .map(cat => `<div class="category-bubble" title="Show ${cat.name}" style="background: ${cat.display};"></div>`);
 
@@ -47,11 +48,43 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             return `
 <div class="palette-item-container color-category-${categoryOfColor}" title="${e.name} | ${e.value}">
     <div class="palette-item" style="--palette-item-color:${e.value}; color:${contrastingColor}">
-        <b>${e.name}</b><br/>
+        <b title="${e.name}">${e.name}</b><br/>
         <c>${e.value}</c>
     </div>
 </div>`;
         });
+
+        // Todo: Maybe we can use a script to calculate an even division of the available space instead of per-element width?
+        /*
+         * Maybe not... The user can resize the view at will. Recalculating the widths of the swatches using a resize observer would probably be bad for performance...
+         *
+         * But it is an option if testing shows otherwise.
+         * After all, the CSS is already doing that kinda resizing all the time anyway.
+         * Question is just how much performance would be affected by having script do that.
+         * 
+         * Besides, might be nice to give users the *option* to tank their performance for prettiness,
+         * as opposed to no option at all just because I wouldn't use it myself :)
+         */
+        // Todo: On the topic of potentally-performance-reducing prettiness options, maybe border-radius?
+        /*
+         * I'll have to think about that. It would be comparitively trivial to implement, but I remember the performance going to CRAP the last time
+         * I gave that many elements in VS Code rounded corners... I'll test that out later.
+         */
+
+        const labelPositionConfig: string = vscode.workspace.getConfiguration('henryRefactors.webPalette.appearance').get('labelPosition') ?? "right";
+        const swatchConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('henryRefactors.webPalette.appearance.swatches');
+
+        const swatchShapeConfig: string = swatchConfig.get('shape') ?? "static";
+        const swatchStaticRatioConfig: number = swatchConfig.get('staticRatio') ?? 2;
+        const swatchHeightConfig: number = swatchConfig.get('height') ?? 1;
+        
+        const swatchShapeStyles: { [key: string]: string } = {
+            'static': `width: ${swatchStaticRatioConfig * swatchHeightConfig}in;`,
+            'fit': "width: fit-content;",
+            'stretch': "min-width: 1in; width: 100%;",
+        };
+        const swatchShapeStyle: string = swatchShapeStyles[swatchShapeConfig];
+        const swatchJustification: string = swatchShapeConfig === 'stretch' ? 'stretch' : 'flex-start';
 
         webviewView.webview.html = `<!DOCTYPE html>
 <html>
@@ -67,22 +100,20 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             padding: 5px;
             cursor: pointer;
             box-sizing: border-box;
-            flex-grow: 1;
             display: flex;
             align-items: stretch;
-            justify-content: stretch;
+            justify-content: ${swatchJustification};
+            ${swatchShapeConfig === 'stretch' ? 'flex-grow: 1;' : ''}
         }
         .palette-item {
             background-color: var(--palette-item-color);
             padding: 10px;
-            min-width: 1in;
-            /* max-width: 2in; */
-            width: 100%;
-            height: 1in;
+            ${swatchShapeStyle}
+            height: ${swatchHeightConfig}in;
             overflow: hidden;
             text-overflow: ellipsis;
             box-sizing: content;
-            text-align: right;
+            text-align: ${labelPositionConfig};
             font-size: var(--vscode-font-size);
         }
         .palette-item-container:hover .palette-item {
@@ -185,13 +216,15 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
 
         document.querySelectorAll('.palette-item-container').forEach((el) => {
             el.addEventListener('click', (event) => {
-                let messageBody = '';
-                const [itemName, itemValue] = el.title.split(' | ');
-                if (event.target.tagName === 'B')
-                    messageBody = itemName;
-                else
-                    messageBody = itemValue;
-                vscode.postMessage({ command: 'get-data', body: messageBody });
+                const [_, itemValue] = el.title.split(' | ');
+                if (event.target.tagName !== 'B')
+                    vscode.postMessage({ command: 'get-data', body: itemValue });
+            });
+        });
+        document.querySelectorAll('.palette-item-container b').forEach((el) => {
+            el.addEventListener('click', () => {
+                const itemName = el.title;
+                vscode.postMessage({ command: 'get-data', body: itemName });
             });
         });
     </script>

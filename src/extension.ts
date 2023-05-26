@@ -20,7 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 vscode.window.registerWebviewViewProvider('named-colors', new PaletteProvider("Named Colors", namedColors));
 vscode.window.registerWebviewViewProvider('common', new PaletteProvider("Common Colors", commonColors));
-addFavorite({ name: "Red", value: "#FF0000" });
 vscode.window.registerWebviewViewProvider('favorites', new PaletteProvider("Favorites", favoriteColors()));
 
 vscode.window.registerWebviewViewProvider('language-check-console', new LanguageCheckProvider());
