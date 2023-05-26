@@ -22,7 +22,10 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
 
         const categories = [
             { name: "all", display: "linear-gradient(to right, red, orange, yellow, green, cyan, dodgerblue, blue, violet, magenta, hotPink, pink)" },
-            { name: "gray", display: "linear-gradient(to right, black, gray, white)" },
+            { name: "grayscale", display: "linear-gradient(to right, black, gray, white)" },
+            { name: "black", display: "black" },
+            { name: "gray", display: "gray" },
+            { name: "white", display: "white" },
             { name: "red", display: "red" },
             { name: "orange", display: "orange" },
             { name: "yellow", display: "yellow" },
@@ -143,24 +146,33 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
 
         document.querySelectorAll('.category-bubble').forEach((el) => {
             el.addEventListener('click', () => {
-                try {
-                    if (activeCategoryFilter) {
-                        activeCategoryFilter.classList.remove('in-use');
-                    }
-                    activeCategoryFilter = el;
-                    el.classList.add('in-use');
-                    const filterCategory = el.title.substring('Show '.length);
-                    if (filterCategory === 'all') {
-                        const all = document.querySelectorAll('.palette-item-container');
-                        all.forEach((e) => { e.classList.remove('hidden'); });
-                    } else {
-                        const nonMatching = document.querySelectorAll(\`.palette-item-container:not(.color-category-\${filterCategory})\`);
-                        const matching = document.querySelectorAll(\`.palette-item-container.color-category-\${filterCategory}\`);
-                        nonMatching.forEach((e) => { e.classList.add('hidden'); });
-                        matching.forEach((e) => { e.classList.remove('hidden'); });
-                    }
-                } catch (err) {
-                    console.error(err);
+                if (activeCategoryFilter) {
+                    activeCategoryFilter.classList.remove('in-use');
+                }
+                activeCategoryFilter = el;
+                el.classList.add('in-use');
+                const filterCategory = el.title.substring('Show '.length);
+                if (filterCategory === 'all') {
+                    const all = document.querySelectorAll('.palette-item-container');
+                    all.forEach((e) => { e.classList.remove('hidden'); });
+                } else if (filterCategory === 'grayscale') {
+                    const nonMatching = document.querySelectorAll('.palette-item-container' + [
+                        ':not(.color-category-black)',
+                        ':not(.color-category-gray)',
+                        ':not(.color-category-white)',
+                        ].join(''));
+                    const matching = document.querySelectorAll([
+                        '.palette-item-container.color-category-black',
+                        '.palette-item-container.color-category-gray',
+                        '.palette-item-container.color-category-white',
+                        ],join(','));
+                    nonMatching.forEach((e) => { e.classList.add('hidden'); });
+                    matching.forEach((e) => { e.classList.remove('hidden'); });
+                } else {
+                    const nonMatching = document.querySelectorAll(\`.palette-item-container:not(.color-category-\${filterCategory})\`);
+                    const matching = document.querySelectorAll(\`.palette-item-container.color-category-\${filterCategory}\`);
+                    nonMatching.forEach((e) => { e.classList.add('hidden'); });
+                    matching.forEach((e) => { e.classList.remove('hidden'); });
                 }
             });
         });
