@@ -71,9 +71,10 @@
     ],
     "configuration": {
       "type": "Object",
-      "title": "Favorite Colors",
+      "title": "Henry Refactors",
       "properties": {
         "henryrefactors.web-palette.favorites": {
+          "title": "Favorite Colors",
           "type": "array",
           "items": {
             "type": "object",
