@@ -28,6 +28,21 @@ A helpful panel for seeing many named colors that copy when clicked.
 
 ![Web Palette example](images/web-palette-example.png)
 
+### Language Check
+
+An isolated mini-editor for quickly testing out programming language features without starting a new project.
+
+Uses `Function()` to execute code and has a custom-defined `console` object for printing output within the extension panel itself.
+
+![Language Check example](images/language-check-example1.png)
+
+#### Limitations:
+
+- `eval()` has been intentionally shadowed with a function that does nothing and throws an error.
+- Only JavaScript is supported at the moment.
+- Syntax highlighting is not supported yet.  
+I wanted to implement at least something basic for comments, but unfortunately I couldn't get it to work smoothly within the `textarea` element...
+
 ## Known Issues
 
 - Henry Align adds trailing whitespace
