@@ -18,9 +18,9 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 }
 
-vscode.window.registerWebviewViewProvider('named-colors', new PaletteProvider("Named Colors", namedColors));
-vscode.window.registerWebviewViewProvider('common', new PaletteProvider("Common Colors", commonColors));
-vscode.window.registerWebviewViewProvider('favorites', new PaletteProvider("Favorites", favoriteColors()));
+vscode.window.registerWebviewViewProvider('named-colors', new PaletteProvider("Named Colors", namedColors, false));
+vscode.window.registerWebviewViewProvider('common', new PaletteProvider("Common Colors", commonColors, false));
+vscode.window.registerWebviewViewProvider('favorites', new PaletteProvider("Favorites", favoriteColors(), true));
 
 vscode.window.registerWebviewViewProvider('language-check-console', new LanguageCheckProvider());
 

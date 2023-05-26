@@ -29,6 +29,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     constructor(
         private title: string,
         private colorList: NamedColor[],
+        private hasAddButton: boolean
     ) { }
 
     resolveWebviewView(
@@ -42,7 +43,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         const categoryList = categories
             .map(cat => `<div class="category-bubble" title="Show ${cat.name}" style="background: ${cat.display};"></div>`);
 
-        const list = this.colorList.map((e: NamedColor) => {
+        const list: string[] = this.colorList.map((e: NamedColor) => {
             const contrastingColor = hwColor.colorContrast(hwColor.ColorConvert.hex6.toRGB01(e.value));
             const categoryOfColor = hwColor.colorCategory(hwColor.ColorConvert.hex6.toHSL(e.value));
             return `
@@ -53,6 +54,14 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     </div>
 </div>`;
         });
+
+        const addButton: string = `
+<div class="palette-item-container" title="Add a new swatch">
+    <div class="palette-item add-button">
+        <b>Add</b><br/>
+        <c>+</c>
+    </div>
+</div>`;
 
         // Todo: Maybe we can use a script to calculate an even division of the available space instead of per-element width?
         /*
@@ -138,6 +147,11 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             font-family: var(--vscode-editor-font-family);
             font-weight: var(--vscode-editor-font-weight);
         }
+        /* Todo */
+        .add-button {
+            --palette-item-color: transparent;
+            color: var(--vscode-editor-foreground);
+        }
         #categories {
             padding: 5px;
             gap: 1ch;
@@ -175,6 +189,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
     </div>
     <div id="palette">
         ${list.join('\n')}
+        ${this.hasAddButton ? addButton : ''}
     </div>
     <script>
         console.log('Hello world');
