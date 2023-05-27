@@ -59,3 +59,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter by color feature for Web Palette
 - "Favorites" feature for Web Palette (add and remove colors through config menu)
 - Many config options for personalizing Web Palette appearance
+
+## [0.2.1] - 2023-05-26
+
+### Added
+
+- Extension icon

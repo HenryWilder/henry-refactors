@@ -10,12 +10,13 @@
   "keywords": [
     "qol"
   ],
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "HenryWilder",
   "galleryBanner": {
     "color": "#bf00ff",
     "theme": "dark"
   },
+  "icon": "resources/icon.png",
   "engines": {
     "vscode": "^1.78.0"
   },
