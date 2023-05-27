@@ -44,25 +44,17 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
             .map(cat => `<div class="category-bubble" title="Show ${cat.name}" style="background: ${cat.display};"></div>`);
 
         const list: string[] = this.colorList.map((e: NamedColor) => {
-            const colorRGB255: hwColor.ColorRGB255 = hwColor.ColorConvert.hex6.toRGB255(e.value);
-            const colorRGB01: hwColor.ColorRGB01 = hwColor.ColorConvert.rgb255.toRGB01(colorRGB255);
-            const contrastingColor = hwColor.colorContrast(colorRGB01);
+            const contrastingColor = hwColor.colorContrast(hwColor.ColorConvert.hex6.toRGB01(e.value));
             const colorHSL: hwColor.ColorHSL = hwColor.ColorConvert.hex6.toHSL(e.value);
             const categoryOfColor = hwColor.colorCategory(colorHSL);
-            return {
-                hsl: colorHSL,
-                rgb: colorRGB255,
-                elmnt: `
+            return `
 <div class="palette-item-container color-category-${categoryOfColor}" title="${e.name} | ${e.value}">
     <div class="palette-item" style="--palette-item-color:${e.value}; color:${contrastingColor}">
         <b title="${e.name}">${e.name}</b><br/>
-        <c>${e.value}</c><br/>
-        <small>H: ${colorHSL.h.toFixed(0)} S: ${colorHSL.s.toFixed(0)} L: ${colorHSL.l.toFixed(0)}</small>
+        <c>${e.value}</c>
     </div>
-</div>`};
-        })
-            // .sort((a, b) => hwColor.colorSort(a.rgb, b.rgb)) // todo...
-            .map((e) => e.elmnt);
+</div>`;
+        });
 
         const addButton: string = `
 <div class="palette-item-container" title="Add a new swatch">
@@ -102,7 +94,7 @@ export class PaletteProvider implements vscode.WebviewViewProvider {
         const swatchHeightConfig: number = swatchConfig.get('height') ?? 1;
         const swatchBorderRadiusConfig: number = swatchConfig.get('borderRadius') ?? 0;
         const swatchPaddingConfig: number = swatchConfig.get('labelPadding') ?? 10;
-        
+
         const swatchShapeStyles: { [key: string]: string } = {
             'static': `width: ${swatchStaticRatioConfig * swatchHeightConfig}in;`,
             'fit': "width: fit-content;",

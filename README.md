@@ -28,6 +28,10 @@ A helpful panel for seeing many named colors that copy when clicked.
 
 ![Web Palette example](images/web-palette-example.png)
 
+Now with customization and filtering as of 0.2.0:
+
+![Web Palette customization example](images/web-palette-personalization-example.png)
+
 ### Language Check
 
 An isolated mini-editor for quickly testing out programming language features without starting a new project.
