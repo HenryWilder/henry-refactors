@@ -20,7 +20,7 @@ export const assertRGB255 = (c: ColorRGB255): void | never => {
         (c.r === Math.floor(c.r) && 0 <= c.r && c.r <= 255) &&
         (c.g === Math.floor(c.g) && 0 <= c.g && c.g <= 255) &&
         (c.b === Math.floor(c.b) && 0 <= c.b && c.b <= 255))) {
-        throw new TypeError("ColorRGB255 must be an integer between 0 and 255 inclusive");
+        throw new TypeError(`ColorRGB255 must be an integer between 0 and 255 inclusive. Value was r${c.r} g${c.g} b${c.b}`);
     }
 };
 
@@ -42,7 +42,7 @@ export const assertRGB01 = (c: ColorRGB01): void | never => {
         (0.0 <= c.r && c.r <= 1.0) &&
         (0.0 <= c.g && c.g <= 1.0) &&
         (0.0 <= c.b && c.b <= 1.0))) {
-        throw new TypeError("ColorRGB01 must be an fraction/decimal between 0.0 and 1.0 inclusive");
+        throw new TypeError(`ColorRGB01 must be an fraction/decimal between 0.0 and 1.0 inclusive. Value was r${c.r} g${c.g} b${c.b}`);
     }
 };
 
@@ -158,6 +158,38 @@ export const colorContrast = (color: ColorRGB01): string => {
     return getBrightness(color) < 0.55 ? "white" : "black";
 };
 
+export const rgbToHilbert = (color: ColorRGB255): number => {
+    assertRGB255(color);
+    const n = 8; // Recursion level
+
+    let r = { x: 0, y: 0, z: 0 }; // Initial orientation
+
+    let d = 0;
+
+    for (let i = n - 1; i >= 0; --i) {
+        const b: ColorRGB255 = {
+            r: (color.r >> i) & 1,
+            g: (color.g >> i) & 1,
+            b: (color.b >> i) & 1,
+        };
+
+        const c = {
+            x: r.y ^ b.g ^ b.b,
+            y: r.x ^ b.r ^ b.b,
+            z: r.z ^ b.r ^ b.g,
+        };
+
+        d +=
+            (c.x << (3 * i + 2)) +
+            (c.y << (3 * i + 1)) +
+            (c.z << (3 * i));
+        
+        r = c;
+    }
+
+    return d;
+};
+
 /**
  * Finds where on the color wheel the given color falls under.
  * @example```
@@ -183,15 +215,26 @@ export const colorCategory = (color: ColorHSL): string => {
         "magenta",
         "rose",
     ];
-    if (color.l < 25) {
+    if (color.l < 15 && color.s < 50) {
         return "black";
     } else if (color.l > 95) {
         return "white";
-    } else if (color.s < 30) {
+    } else if (color.s < 0.15 * (100 - color.l)) {
         return "gray";
     } else if (color.l > 75 && (color.h <= 30 || color.h >= 290)) {
         return "pink";
     } else {
         return hueNames[Math.floor(color.h / 30)];
+    }
+};
+
+export const colorSort = (a: ColorRGB255, b: ColorRGB255): number => {
+    try {
+        const hilbertA: number = rgbToHilbert(a);
+        const hilbertB: number = rgbToHilbert(b);
+        return hilbertA - hilbertB;
+    } catch (err) {
+        console.error(err);
+        return 0;
     }
 };
